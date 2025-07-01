@@ -1,11 +1,11 @@
 import streamlit as st
 from project_utils import *
 
-# --- Page config ---
+# --- Page Config ---
 st.set_page_config(page_title="Harmony", layout="wide")
 st.title("Project Harmony")
 
-# --- CSS Styling ---
+# --- Custom CSS Styling ---
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -19,20 +19,20 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* Input Fields */
+    /* Input fields */
     section[data-testid="stTextInput"] input,
     section[data-testid="stTextArea"] textarea {
-        background-color: #1c1c1c !important;
+        background-color: #1a1a1a !important;
         color: #ffffff !important;
-        border: 1px solid #555555 !important;
+        border: 1px solid #444 !important;
         border-radius: 8px;
         padding: 10px;
         font-weight: 500;
     }
 
-    /* Default Buttons */
+    /* All standard buttons */
     div.stButton > button {
-        background-color: #1c1c1c !important;
+        background-color: #222222 !important;
         color: #ffffff !important;
         font-weight: 600;
         border: none;
@@ -42,15 +42,15 @@ st.markdown("""
     }
 
     div.stButton > button:hover {
-        background-color: #333333 !important;
+        background-color: #444444 !important;
         transform: scale(1.03);
     }
 
-    /* Floating Buttons (FAB) */
+    /* Floating Buttons */
     .stButton > button.fab {
         position: fixed;
         bottom: 20px;
-        background-color: #1c1c1c !important;
+        background-color: #222222 !important;
         color: #ffffff !important;
         border: none;
         padding: 12px 16px;
@@ -68,7 +68,7 @@ st.markdown("""
         right: 30px;
     }
 
-    /* Note Card Styling */
+    /* Note Cards */
     .note-card {
         background-color: #1c1c1c;
         color: #ffffff !important;
@@ -85,40 +85,25 @@ st.markdown("""
         box-shadow: 3px 3px 12px rgba(255,255,255,0.15);
     }
 
-    /* Custom “Open” Button */
-    .note-open-button {
-        background-color: #1c1c1c !important;
-        color: #ffffff !important;
-        font-weight: 600;
-        border: none;
-        border-radius: 8px;
-        padding: 8px 16px;
-        margin-top: 8px;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-    }
-
-    .note-open-button:hover {
-        background-color: #333333 !important;
-    }
-
+    /* Alerts */
     .stAlert {
         background-color: #222222 !important;
         border-left: 5px solid #ffffff;
         color: #ffffff !important;
     }
 
+    /* Download Button */
     .stDownloadButton > button {
-        background-color: #1c1c1c !important;
+        background-color: #222222 !important;
         color: #ffffff !important;
         border-radius: 10px;
     }
 
     .stDownloadButton > button:hover {
-        background-color: #333333 !important;
+        background-color: #444444 !important;
     }
 
-    /* Logout button (top right) */
+    /* Logout Button */
     .stButton > button.logout-button {
         position: fixed;
         top: 45px;
@@ -131,7 +116,6 @@ st.markdown("""
         border-radius: 8px;
         font-size: 14px;
     }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -161,7 +145,7 @@ with col1:
         st.session_state.view_note = None
         st.session_state.show_analysis = False
 with col2:
-    if st.button("📊", key = "float_button"):
+    if st.button("📊", key="float_button"):
         st.session_state.show_form = False
         st.session_state.view_note = None
         st.session_state.show_analysis = True
@@ -186,7 +170,7 @@ if st.session_state.view_note:
                 new_title = st.text_input("Edit Title", value=note_title)
                 new_text = st.text_area("Edit Note", value=note_text, height=300)
 
-                col1, spacer, col2, spacer, col3, spacer, col4 = st.columns([1, 2, 1, 2, 1, 2, 1])
+                col1, _, col2, _, col3, _, col4 = st.columns([1, 2, 1, 2, 1, 2, 1])
                 save_button = col1.form_submit_button("Save Changes")
                 update_pred_button = col2.form_submit_button("Update Prediction")
                 delete_button = col3.form_submit_button("Delete Note")
@@ -220,16 +204,14 @@ if st.session_state.view_note:
 elif st.session_state.show_analysis:
     try:
         df = get_notes_from_supabase()
-
         if df.empty:
             st.error("No notes found.")
         else:
             with st.form("your_analysis"):
                 st.subheader("Choose which analysis you need to see")
-                options = ["Depression", "Schizophrenia"]
-                selected = st.selectbox("Choose an option:", options)
+                selected = st.selectbox("Choose an option:", ["Depression", "Schizophrenia"])
 
-                col1, spacer, col2 = st.columns([1, 8, 1])
+                col1, _, col2 = st.columns([1, 8, 1])
                 submit_analysis = col1.form_submit_button("Show Analysis")
                 back_button = col2.form_submit_button("Back to Notes")
 
@@ -243,9 +225,8 @@ elif st.session_state.show_analysis:
                         show_analysis_depression()
                     elif selected == "Schizophrenia":
                         show_analysis_schizo()
-
     except Exception as e:
-        st.error(f"Failed to fetch analysis data: {e}")        
+        st.error(f"Failed to fetch analysis data: {e}")
 
 # --- Note Form ---
 elif st.session_state.show_form:
@@ -260,7 +241,7 @@ elif st.session_state.show_form:
         if st.session_state.pending_prediction:
             st.info(f"Prediction: {st.session_state.pending_prediction}")
 
-        col1, spacer, col2, spacer, col3 = st.columns([2, 5, 1, 5, 1])
+        col1, _, col2, _, col3 = st.columns([2, 5, 1, 5, 1])
         get_pred = col1.form_submit_button("Get Prediction")
         save = col2.form_submit_button("Save")
         cancel = col3.form_submit_button("Cancel")
@@ -300,7 +281,6 @@ else:
         st.info("No notes saved yet!")
     else:
         st.subheader("Saved Notes")
-
         num_cols = 5
         rows = [notes[i:i + num_cols] for i in range(0, len(notes), num_cols)]
 
@@ -308,13 +288,13 @@ else:
             cols = st.columns(num_cols, gap="small")
             for idx, (note_series, col) in enumerate(zip(row.iterrows(), cols)):
                 _, note = note_series
-                display_title = note["title"]
+                title = note["title"]
                 preview_text = preview(note["body"])
 
                 with col:
                     st.markdown(f"""
-                    <div class=\"note-card\">
-                        <strong>{display_title}</strong><br><br>
+                    <div class="note-card">
+                        <strong>{title}</strong><br><br>
                         {preview_text}
                     </div>
                     """, unsafe_allow_html=True)
