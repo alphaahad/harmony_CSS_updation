@@ -10,41 +10,9 @@ st.markdown("""
 <style>
     html, body, .stApp {
         font-family: 'Quicksand', sans-serif;
-        color: #1f1f1f;
-        overflow-x: hidden;
-        position: relative;
-    }
-
-    .stApp::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: url('https://www.transparenttextures.com/patterns/soft-wallpaper.png'),
-                    linear-gradient(135deg, #f4f7f5 0%, #e9f1ed 100%);
-        background-size: cover;
+        background: linear-gradient(135deg, #f4f7f5, #e9f1ed);
         background-attachment: fixed;
-        z-index: -2;
-        opacity: 0.4;
-    }
-
-    .stApp::after {
-        content: "";
-        position: fixed;
-        top: -30vh;
-        left: -10vw;
-        width: 140vw;
-        height: 140vh;
-        background: radial-gradient(circle at center, #69826633 0%, #f4f7f500 70%);
-        z-index: -1;
-        animation: gentleWave 30s ease-in-out infinite;
-    }
-
-    @keyframes gentleWave {
-        0%, 100% { transform: scale(1) translate(0, 0); }
-        50% { transform: scale(1.05) translate(10px, 20px); }
+        color: #1f1f1f;
     }
 
     h1, h2, h3, h4, h5 {
@@ -106,9 +74,9 @@ st.markdown("""
         transform: scale(1.02);
         box-shadow: 3px 3px 12px rgba(0,0,0,0.25);
     }
-
 </style>
 """, unsafe_allow_html=True)
+
 
 # --- Session State Initialization ---
 for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.items():
