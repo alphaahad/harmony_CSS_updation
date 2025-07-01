@@ -11,7 +11,7 @@ st.markdown("""
 <style>
     html, body, .stApp {
         font-family: 'Quicksand', sans-serif;
-        background-color: #123524;
+        background-color: #165239 !important; /* lighter pthalo */
         color: #d6f5d6;
     }
 
@@ -20,7 +20,7 @@ st.markdown("""
     }
 
     div.stButton > button {
-        background-color: #d6f5d6;
+        background-color: #d6f5d6 !important;
         color: #123524 !important;
         border: none;
         border-radius: 10px;
@@ -30,16 +30,17 @@ st.markdown("""
     }
 
     div.stButton > button:hover {
-        background-color: #bfecc0;
+        background-color: #c1ecc2 !important;
         transform: scale(1.03);
     }
 
-    .stTextInput > div > input,
-    .stTextArea > div > textarea {
-        background-color: #d6f5d6 !important;
+    /* Fix for email/password inputs */
+    section[data-testid="stTextInput"] input,
+    section[data-testid="stTextArea"] textarea {
+        background-color: #e0f9dd !important;
         color: #123524 !important;
-        border-radius: 10px !important;
-        border: 1px solid #bfecc0 !important;
+        border: 1px solid #c4e8c3 !important;
+        border-radius: 8px;
         padding: 10px;
         font-weight: 500;
     }
@@ -51,13 +52,13 @@ st.markdown("""
     }
 
     .stDownloadButton > button {
-        background-color: #d6f5d6;
+        background-color: #d6f5d6 !important;
         color: #123524 !important;
         border-radius: 10px;
     }
 
     .stDownloadButton > button:hover {
-        background-color: #c7eec2;
+        background-color: #c7eec2 !important;
     }
 
     .note-card {
@@ -68,8 +69,6 @@ st.markdown("""
         box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
         font-size: 15px;
         line-height: 1.5;
-        height: 200px;
-        overflow: hidden;
         transition: all 0.2s ease;
     }
 
@@ -77,8 +76,43 @@ st.markdown("""
         transform: scale(1.02);
         box-shadow: 3px 3px 12px rgba(0,0,0,0.25);
     }
+
+    .stDataFrame, .stTable {
+        background-color: #d6f5d6 !important;
+        color: #123524 !important;
+    }
+
+    /* Bottom right floating buttons */
+    .stButton>button {
+        position: fixed;
+        bottom: 10px;
+        background-color: #000000;
+        color: white;
+        border: none;
+        padding: 12px 18px;
+        font-size: 22px;
+        border-radius: 50%;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+        z-index: 9999;
+    }
+
+    div[data-testid="column"]:nth-of-type(1) button {
+        right: 90px; 
+    }
+
+    div[data-testid="column"]:nth-of-type(2) button {
+        right: 30px;
+    }
+
+    /* Specific fix for "Open" buttons on cards */
+    button.open-button {
+        background-color: #d6f5d6 !important;
+        color: #123524 !important;
+        font-weight: 600;
+    }
 </style>
 """, unsafe_allow_html=True)
+
 
 # --- Session State Initialization ---
 for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.items():
