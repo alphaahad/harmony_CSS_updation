@@ -34,6 +34,8 @@ def is_valid_email(email: str) -> bool:
 
 # --- Auth Logic ---
 def login_screen():
+    st.warning("🚧 login_screen() was called")
+def login_screen():
     st.subheader("🔐 Welcome to HARMONY")
 
     login_tab, register_tab = st.tabs(["Log In", "Register"])
