@@ -1,128 +1,96 @@
 import streamlit as st
 from project_utils import *
 
-# --- Set page config (call only once) ---
+# --- Page config ---
+st.set_page_config(page_title="Harmony", layout="wide")
+st.title("Project Harmony")
+
+# --- CSS Styling ---
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
 <style>
     html, body, .stApp {
         font-family: 'Quicksand', sans-serif;
-        background-color: #f0f1f4;
-        color: #1f1f1f;
+        background-color: #123524;
+        color: #d6f5d6;
     }
 
-    h1, h2, h3, h4, h5 {
-        color: #2c2c2c;
-        font-weight: 600;
+    h1, h2, h3, h4, h5, h6, label, p, div {
+        color: #d6f5d6 !important;
     }
 
     div.stButton > button {
-        background-color: #8f81e8;
-        color: white !important;
+        background-color: #d6f5d6;
+        color: #123524 !important;
         border: none;
-        border-radius: 12px;
+        border-radius: 10px;
         padding: 0.6em 1.2em;
         font-weight: 600;
         transition: all 0.2s ease-in-out;
     }
 
     div.stButton > button:hover {
-        background-color: #6f5fd6;
+        background-color: #bfecc0;
         transform: scale(1.03);
     }
 
     .stTextInput > div > input,
     .stTextArea > div > textarea {
-        background-color: #ffffff !important;
-        color: #1f1f1f !important;
+        background-color: #d6f5d6 !important;
+        color: #123524 !important;
         border-radius: 10px !important;
-        border: 1px solid #cccccc !important;
+        border: 1px solid #bfecc0 !important;
         padding: 10px;
-    }
-
-    label {
-        color: #3a3a3a !important;
-        font-weight: 600 !important;
+        font-weight: 500;
     }
 
     .stAlert {
-        background-color: #e8eaf6;
-        border-left: 5px solid #8f81e8;
-        color: #1f1f1f;
-    }
-
-    .stDataFrame, .stTable {
-        background-color: #ffffff !important;
-        color: #1f1f1f !important;
+        background-color: #bfecc0;
+        border-left: 5px solid #d6f5d6;
+        color: #123524 !important;
     }
 
     .stDownloadButton > button {
-        background-color: #8f81e8;
-        color: white;
-        border-radius: 12px;
+        background-color: #d6f5d6;
+        color: #123524 !important;
+        border-radius: 10px;
     }
 
     .stDownloadButton > button:hover {
-        background-color: #6f5fd6;
+        background-color: #c7eec2;
     }
 
     .note-card {
-        background-color: #ffffff;
+        background-color: #d6f5d6;
+        color: #123524;
         border-radius: 12px;
         padding: 15px;
-        box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
-        transition: all 0.2s ease-in-out;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
         font-size: 15px;
         line-height: 1.5;
-        color: #1f1f1f;
+        height: 200px;
+        overflow: hidden;
+        transition: all 0.2s ease;
     }
 
     .note-card:hover {
         transform: scale(1.02);
-        box-shadow: 3px 3px 12px rgba(0,0,0,0.15);
+        box-shadow: 3px 3px 12px rgba(0,0,0,0.25);
     }
-
-    /* Floating button spacing fix */
-    .stButton > button.floating {
-        margin-right: 20px !important;
-    }
-
-    div[data-testid="column"]:nth-of-type(1) button {
-        right: 110px;
-    }
-
-    div[data-testid="column"]:nth-of-type(2) button {
-        right: 30px;
-    }
-
 </style>
 """, unsafe_allow_html=True)
 
+# --- Session State Initialization ---
+for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.items():
+    if key not in st.session_state:
+        st.session_state[key] = val
 
 # --- Login Logic ---
 if "email" not in st.session_state:
     login_screen()
     st.stop()
 
-# --- Logout Button at top right ---
-st.markdown("""
-    <style>
-    .stButton > button.logout-button {
-        position: fixed;
-        top: 45px;
-        right: 25px;
-        z-index: 1000;
-        background-color: #f44336;
-        color: white;
-        padding: 10px 15px;
-        border: none;
-        border-radius: 8px;
-        font-size: 14px;
-        cursor: pointer;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
+# --- Logout Button ---
 space, col1 = st.columns([15,1])
 with col1:
     if st.button("Logout", key="logout", help="Log out of Harmony"):
@@ -130,7 +98,7 @@ with col1:
             del st.session_state[key]
         st.rerun()
 
-# --- Floating Add Button ---
+# --- Floating Add & Chart Buttons ---
 space, col2, col1 = st.columns([25,1,1])
 with col1:
     if st.button("➕", key="float-add"):
@@ -143,32 +111,7 @@ with col2:
         st.session_state.view_note = None
         st.session_state.show_analysis = True
 
-st.markdown("""
-    <style>
-    .stButton>button {
-        position: fixed;
-        bottom: 10px;
-        background-color: #000000;
-        color: white;
-        border: none;
-        padding: 12px 18px;
-        font-size: 22px;
-        border-radius: 50%;
-        box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
-        z-index: 9999;
-    }
-    
-    div[data-testid="column"]:nth-of-type(1) button {
-        right: 90px; 
-    }
-
-    div[data-testid="column"]:nth-of-type(2) button {
-        right: 30px;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-# --- Note Display ---
+# --- Note Viewer ---
 if st.session_state.view_note:
     try:
         df = get_notes_from_supabase()
@@ -218,6 +161,7 @@ if st.session_state.view_note:
         st.error(f"Failed to load note: {e}")
         st.session_state.view_note = None
 
+# --- Analysis View ---
 elif st.session_state.show_analysis:
     try:
         df = get_notes_from_supabase()
@@ -248,6 +192,7 @@ elif st.session_state.show_analysis:
     except Exception as e:
         st.error(f"Failed to fetch analysis data: {e}")        
 
+# --- Note Form ---
 elif st.session_state.show_form:
     with st.form("new_note"):
         st.subheader("Add a New Note")
@@ -293,6 +238,7 @@ elif st.session_state.show_form:
         st.session_state.show_form = False
         st.rerun()
 
+# --- Saved Notes Display ---
 else:
     notes = get_notes_from_supabase()
     if notes.empty:
@@ -312,19 +258,7 @@ else:
 
                 with col:
                     st.markdown(f"""
-                    <div style="
-                        width: 250px;
-                        height: 200px;
-                        padding: 15px;
-                        border-radius: 12px;
-                        box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-                        background-color: #698266;
-                        color: white;
-                        overflow: hidden;
-                        font-size: 15px;
-                        line-height: 1.4;
-                        margin-bottom: 5px;
-                    ">
+                    <div class=\"note-card\">
                         <strong>{display_title}</strong><br><br>
                         {preview_text}
                     </div>
