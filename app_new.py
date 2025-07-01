@@ -30,21 +30,24 @@ st.markdown("""
         font-weight: 500;
     }
 
-    /* Default buttons */
-    div.stButton > button {
-        background-color: #e0f9dd !important;
-        color: #000000 !important;  /* black text */
-        font-weight: 600;
-        border: none;
-        border-radius: 10px;
-        padding: 0.6em 1.2em;
-        transition: all 0.2s ease-in-out;
-    }
+    /* Base button styling */
+div.stButton > button {
+    background-color: #ffffff !important;       /* White background */
+    color: #165239 !important;                  /* Pthalo green text */
+    border: none;
+    border-radius: 10px;
+    padding: 0.6em 1.2em;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+}
 
-    div.stButton > button:hover {
-        background-color: #c8edc6 !important;
-        transform: scale(1.03);
-    }
+/* Hover effect */
+div.stButton > button:hover {
+    background-color: #f0f0f0 !important;       /* Light grey on hover */
+    color: #165239 !important;
+    transform: scale(1.03);
+}
+
 
     /* Floating Buttons */
     .stButton > button.fab {
