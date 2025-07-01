@@ -5,6 +5,111 @@ from project_utils import *
 st.set_page_config(page_title="Harmony", layout="wide")
 st.title("Project Harmony")
 
+st.markdown("""
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    html, body, .stApp {
+        font-family: 'Quicksand', sans-serif;
+        color: #1f1f1f;
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    .stApp::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: url('https://www.transparenttextures.com/patterns/soft-wallpaper.png'),
+                    linear-gradient(135deg, #f4f7f5 0%, #e9f1ed 100%);
+        background-size: cover;
+        background-attachment: fixed;
+        z-index: -2;
+        opacity: 0.4;
+    }
+
+    .stApp::after {
+        content: "";
+        position: fixed;
+        top: -30vh;
+        left: -10vw;
+        width: 140vw;
+        height: 140vh;
+        background: radial-gradient(circle at center, #69826633 0%, #f4f7f500 70%);
+        z-index: -1;
+        animation: gentleWave 30s ease-in-out infinite;
+    }
+
+    @keyframes gentleWave {
+        0%, 100% { transform: scale(1) translate(0, 0); }
+        50% { transform: scale(1.05) translate(10px, 20px); }
+    }
+
+    h1, h2, h3, h4, h5 {
+        color: #2c2c2c;
+        font-weight: 600;
+    }
+
+    div.stButton > button {
+        background-color: #698266;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 0.6em 1.2em;
+        font-weight: 600;
+        transition: all 0.2s ease-in-out;
+    }
+
+    div.stButton > button:hover {
+        background-color: #536f4e;
+        transform: scale(1.03);
+    }
+
+    .stTextInput > div > input,
+    .stTextArea > div > textarea {
+        background-color: #ffffff !important;
+        color: #1f1f1f !important;
+        border-radius: 10px !important;
+        border: 1px solid #cccccc !important;
+        padding: 10px;
+    }
+
+    label {
+        color: #3a3a3a !important;
+        font-weight: 600 !important;
+    }
+
+    .stAlert {
+        background-color: #e6f0e9;
+        border-left: 5px solid #698266;
+        color: #1f1f1f;
+    }
+
+    .stDataFrame, .stTable {
+        background-color: #ffffff !important;
+        color: #1f1f1f !important;
+    }
+
+    .stDownloadButton > button {
+        background-color: #a076f9;
+        color: white;
+        border-radius: 12px;
+    }
+
+    .stDownloadButton > button:hover {
+        background-color: #8d62d1;
+    }
+
+    .note-card:hover {
+        transform: scale(1.02);
+        box-shadow: 3px 3px 12px rgba(0,0,0,0.25);
+    }
+
+</style>
+""", unsafe_allow_html=True)
+
 # --- Session State Initialization ---
 for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.items():
     if key not in st.session_state:
