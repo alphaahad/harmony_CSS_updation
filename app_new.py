@@ -12,8 +12,8 @@ st.markdown("""
 <style>
     html, body, .stApp {
         font-family: 'Quicksand', sans-serif;
-        background-color: #165239 !important;
-        color: #165239 !important;
+        background-color: #000000 !important;
+        color: #ffffff !important;
     }
 
     h1, h2, h3, h4, h5, h6, label, p, div, span, .stMarkdown {
@@ -23,18 +23,18 @@ st.markdown("""
     /* Inputs and Text Areas */
     section[data-testid="stTextInput"] input,
     section[data-testid="stTextArea"] textarea {
-        background-color: #ffffff !important;
-        color: #165239 !important;
-        border: 1px solid #c4e8c3 !important;
+        background-color: #1c1c1c !important;
+        color: #ffffff !important;
+        border: 1px solid #444 !important;
         border-radius: 8px;
         padding: 10px;
         font-weight: 500;
     }
 
-    /* All primary buttons */
+    /* Default Buttons */
     div.stButton > button {
         background-color: #ffffff !important;
-        color: #165239 !important;
+        color: #000000 !important;
         font-weight: 600;
         border: none;
         border-radius: 10px;
@@ -43,9 +43,8 @@ st.markdown("""
     }
 
     div.stButton > button:hover {
-        background-color: #f2fdf2 !important;
+        background-color: #e6e6e6 !important;
         transform: scale(1.03);
-        color: #165239 !important;
     }
 
     /* Floating Buttons */
@@ -53,12 +52,12 @@ st.markdown("""
         position: fixed;
         bottom: 20px;
         background-color: #ffffff !important;
-        color: #165239 !important;
+        color: #000000 !important;
         border: none;
         padding: 12px 16px;
         font-size: 22px;
         border-radius: 50%;
-        box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+        box-shadow: 2px 2px 10px rgba(255,255,255,0.1);
         z-index: 9999;
     }
 
@@ -72,11 +71,11 @@ st.markdown("""
 
     /* Note Cards */
     .note-card {
-        background-color: #ffffff;
-        color: #165239 !important;
+        background-color: #1e1e1e;
+        color: #ffffff !important;
         border-radius: 12px;
         padding: 15px;
-        box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+        box-shadow: 2px 2px 10px rgba(255,255,255,0.1);
         font-size: 15px;
         line-height: 1.5;
         transition: all 0.2s ease;
@@ -84,31 +83,31 @@ st.markdown("""
 
     .note-card:hover {
         transform: scale(1.02);
-        box-shadow: 3px 3px 12px rgba(0,0,0,0.25);
+        box-shadow: 3px 3px 12px rgba(255,255,255,0.15);
     }
 
     .stDataFrame, .stTable {
-        background-color: #ffffff !important;
-        color: #165239 !important;
+        background-color: #1c1c1c !important;
+        color: #ffffff !important;
     }
 
     .stAlert {
-        background-color: #ffffff !important;
-        border-left: 5px solid #165239;
-        color: #165239 !important;
+        background-color: #292929 !important;
+        border-left: 5px solid #555;
+        color: #ffffff !important;
     }
 
     .stDownloadButton > button {
         background-color: #ffffff !important;
-        color: #165239 !important;
+        color: #000000 !important;
         border-radius: 10px;
     }
 
     .stDownloadButton > button:hover {
-        background-color: #f1fff1 !important;
+        background-color: #e6e6e6 !important;
     }
 
-    /* Logout Button */
+    /* Logout button */
     .stButton > button.logout-button {
         position: fixed;
         top: 45px;
@@ -123,6 +122,7 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+
 
 
 # --- Session State Initialization ---
