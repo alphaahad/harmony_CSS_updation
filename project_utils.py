@@ -33,8 +33,7 @@ def is_valid_email(email: str) -> bool:
     return re.match(pattern, email) is not None
 
 # --- Auth Logic ---
-def login_screen():
-    st.warning("🚧 login_screen() was called")
+
 def login_screen():
     st.subheader("🔐 Welcome to HARMONY")
 
