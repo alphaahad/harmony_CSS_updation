@@ -6,34 +6,35 @@ st.set_page_config(page_title="Harmony", layout="wide")
 st.title("Project Harmony")
 
 # --- CSS Styling ---
+# --- CSS Styling ---
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
 <style>
     html, body, .stApp {
         font-family: 'Quicksand', sans-serif;
-        background-color: #165239 !important;  /* lighter pthalo */
-        color: #ffffff;
+        background-color: #165239 !important;
+        color: #165239 !important;
     }
 
-    h1, h2, h3, h4, h5, h6, label, p, div {
+    h1, h2, h3, h4, h5, h6, label, p, div, span, .stMarkdown {
         color: #ffffff !important;
     }
 
     /* Inputs and Text Areas */
     section[data-testid="stTextInput"] input,
     section[data-testid="stTextArea"] textarea {
-        background-color: #e0f9dd !important;
-        color: #000000 !important;  /* black text */
+        background-color: #ffffff !important;
+        color: #165239 !important;
         border: 1px solid #c4e8c3 !important;
         border-radius: 8px;
         padding: 10px;
         font-weight: 500;
     }
 
-    /* Default buttons */
+    /* All primary buttons */
     div.stButton > button {
-        background-color: #e0f9dd !important;
-        color: #000000 !important;  /* black text */
+        background-color: #ffffff !important;
+        color: #165239 !important;
         font-weight: 600;
         border: none;
         border-radius: 10px;
@@ -42,17 +43,17 @@ st.markdown("""
     }
 
     div.stButton > button:hover {
-        background-color: #c8edc6 !important;
+        background-color: #f2fdf2 !important;
         transform: scale(1.03);
+        color: #165239 !important;
     }
-
 
     /* Floating Buttons */
     .stButton > button.fab {
         position: fixed;
         bottom: 20px;
-        background-color: #e0f9dd !important;
-        color: #000000 !important;
+        background-color: #ffffff !important;
+        color: #165239 !important;
         border: none;
         padding: 12px 16px;
         font-size: 22px;
@@ -60,7 +61,6 @@ st.markdown("""
         box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
         z-index: 9999;
     }
-
 
     div[data-testid="column"]:nth-of-type(1) button.fab {
         right: 90px;
@@ -70,10 +70,10 @@ st.markdown("""
         right: 30px;
     }
 
-    /* Note Card Styling */
+    /* Note Cards */
     .note-card {
-        background-color: #e0f9dd;
-        color: #000000 !important;  /* black text */
+        background-color: #ffffff;
+        color: #165239 !important;
         border-radius: 12px;
         padding: 15px;
         box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
@@ -88,27 +88,27 @@ st.markdown("""
     }
 
     .stDataFrame, .stTable {
-        background-color: #e0f9dd !important;
-        color: #000000 !important;
+        background-color: #ffffff !important;
+        color: #165239 !important;
     }
 
     .stAlert {
-        background-color: #e0f9dd !important;
-        border-left: 5px solid #123524;
-        color: #000000 !important;
+        background-color: #ffffff !important;
+        border-left: 5px solid #165239;
+        color: #165239 !important;
     }
 
     .stDownloadButton > button {
-        background-color: #e0f9dd !important;
-        color: #000000 !important;
+        background-color: #ffffff !important;
+        color: #165239 !important;
         border-radius: 10px;
     }
 
     .stDownloadButton > button:hover {
-        background-color: #c7eec2 !important;
+        background-color: #f1fff1 !important;
     }
 
-    /* Logout button */
+    /* Logout Button */
     .stButton > button.logout-button {
         position: fixed;
         top: 45px;
@@ -123,6 +123,7 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+
 
 # --- Session State Initialization ---
 for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.items():
