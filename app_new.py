@@ -41,24 +41,27 @@ st.markdown("""
         transition: all 0.2s ease-in-out;
     }
 
-    div.stButton > button:hover {
-        background-color: #c8edc6 !important;
-        transform: scale(1.03);
-    }
+   div.stButton > button:hover {
+    background-color: #c8edc6 !important;
+    transform: scale(1.03);
+    color: #000000 !important;  /* ← force black text on hover too */
+}
 
-    /* Floating Buttons */
-    .stButton > button.fab {
-        position: fixed;
-        bottom: 20px;
-        background-color: #e0f9dd !important;
-        color: #000000 !important;
-        border: none;
-        padding: 12px 16px;
-        font-size: 22px;
-        border-radius: 50%;
-        box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
-        z-index: 9999;
-    }
+/* Floating Buttons */
+.stButton > button.fab {
+    position: fixed;
+    bottom: 20px;
+    background-color: #e0f9dd !important;
+    color: #000000 !important;  /* ← this is what was missing */
+    border: none;
+    padding: 12px 16px;
+    font-size: 22px;
+    font-weight: 700;
+    border-radius: 50%;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    z-index: 9999;
+}
+
 
     div[data-testid="column"]:nth-of-type(1) button.fab {
         right: 90px;
