@@ -2,16 +2,12 @@ import streamlit as st
 from project_utils import *
 
 # --- Set page config (call only once) ---
-st.set_page_config(page_title="Harmony", layout="wide")
-st.title("Project Harmony")
-
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
 <style>
     html, body, .stApp {
         font-family: 'Quicksand', sans-serif;
-        background: linear-gradient(135deg, #f4f7f5, #e9f1ed);
-        background-attachment: fixed;
+        background-color: #f0f1f4;
         color: #1f1f1f;
     }
 
@@ -21,8 +17,8 @@ st.markdown("""
     }
 
     div.stButton > button {
-        background-color: #698266;
-        color: white;
+        background-color: #8f81e8;
+        color: white !important;
         border: none;
         border-radius: 12px;
         padding: 0.6em 1.2em;
@@ -31,7 +27,7 @@ st.markdown("""
     }
 
     div.stButton > button:hover {
-        background-color: #536f4e;
+        background-color: #6f5fd6;
         transform: scale(1.03);
     }
 
@@ -50,8 +46,8 @@ st.markdown("""
     }
 
     .stAlert {
-        background-color: #e6f0e9;
-        border-left: 5px solid #698266;
+        background-color: #e8eaf6;
+        border-left: 5px solid #8f81e8;
         color: #1f1f1f;
     }
 
@@ -61,27 +57,47 @@ st.markdown("""
     }
 
     .stDownloadButton > button {
-        background-color: #a076f9;
+        background-color: #8f81e8;
         color: white;
         border-radius: 12px;
     }
 
     .stDownloadButton > button:hover {
-        background-color: #8d62d1;
+        background-color: #6f5fd6;
+    }
+
+    .note-card {
+        background-color: #ffffff;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+        transition: all 0.2s ease-in-out;
+        font-size: 15px;
+        line-height: 1.5;
+        color: #1f1f1f;
     }
 
     .note-card:hover {
         transform: scale(1.02);
-        box-shadow: 3px 3px 12px rgba(0,0,0,0.25);
+        box-shadow: 3px 3px 12px rgba(0,0,0,0.15);
     }
+
+    /* Floating button spacing fix */
+    .stButton > button.floating {
+        margin-right: 20px !important;
+    }
+
+    div[data-testid="column"]:nth-of-type(1) button {
+        right: 110px;
+    }
+
+    div[data-testid="column"]:nth-of-type(2) button {
+        right: 30px;
+    }
+
 </style>
 """, unsafe_allow_html=True)
 
-
-# --- Session State Initialization ---
-for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.items():
-    if key not in st.session_state:
-        st.session_state[key] = val
 
 # --- Login Logic ---
 if "email" not in st.session_state:
