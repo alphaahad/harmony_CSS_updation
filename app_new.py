@@ -11,30 +11,14 @@ st.markdown("""
 <style>
     html, body, .stApp {
         font-family: 'Quicksand', sans-serif;
-        background-color: #165239 !important; /* lighter pthalo */
-        color: #d6f5d6;
+        background-color: #165239 !important;
+        color: #f0fff0;
     }
 
     h1, h2, h3, h4, h5, h6, label, p, div {
-        color: #d6f5d6 !important;
+        color: #f0fff0 !important;
     }
 
-    div.stButton > button {
-        background-color: #d6f5d6 !important;
-        color: #123524 !important;
-        border: none;
-        border-radius: 10px;
-        padding: 0.6em 1.2em;
-        font-weight: 600;
-        transition: all 0.2s ease-in-out;
-    }
-
-    div.stButton > button:hover {
-        background-color: #c1ecc2 !important;
-        transform: scale(1.03);
-    }
-
-    /* Fix for email/password inputs */
     section[data-testid="stTextInput"] input,
     section[data-testid="stTextArea"] textarea {
         background-color: #e0f9dd !important;
@@ -45,24 +29,39 @@ st.markdown("""
         font-weight: 500;
     }
 
+    div.stButton > button {
+        background-color: #e0f9dd !important;
+        color: #123524 !important;
+        font-weight: 600;
+        border: none;
+        border-radius: 10px;
+        padding: 0.6em 1.2em;
+        transition: all 0.2s ease-in-out;
+    }
+
+    div.stButton > button:hover {
+        background-color: #c8edc6 !important;
+        transform: scale(1.03);
+    }
+
     .stAlert {
-        background-color: #bfecc0;
-        border-left: 5px solid #d6f5d6;
+        background-color: #e0f9dd !important;
+        border-left: 5px solid #123524;
         color: #123524 !important;
     }
 
     .stDownloadButton > button {
-        background-color: #d6f5d6 !important;
+        background-color: #e0f9dd !important;
         color: #123524 !important;
         border-radius: 10px;
     }
 
     .stDownloadButton > button:hover {
-        background-color: #c7eec2 !important;
+        background-color: #d2f0cc !important;
     }
 
     .note-card {
-        background-color: #d6f5d6;
+        background-color: #e0f9dd;
         color: #123524;
         border-radius: 12px;
         padding: 15px;
@@ -78,43 +77,47 @@ st.markdown("""
     }
 
     .stDataFrame, .stTable {
-        background-color: #d6f5d6 !important;
+        background-color: #e0f9dd !important;
         color: #123524 !important;
     }
 
-    /* Bottom right floating buttons */
-    .stButton>button {
+    /* Floating Add & Chart Buttons */
+    .stButton > button.fab {
         position: fixed;
-        bottom: 10px;
-        background-color: #000000;
-        color: white;
+        bottom: 20px;
+        background-color: #e0f9dd !important;
+        color: #123524 !important;
         border: none;
-        padding: 12px 18px;
+        padding: 12px 16px;
         font-size: 22px;
         border-radius: 50%;
         box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
         z-index: 9999;
     }
 
-    div[data-testid="column"]:nth-of-type(1) button {
-        right: 90px; 
+    div[data-testid="column"]:nth-of-type(1) button.fab {
+        right: 90px;
     }
 
-    div[data-testid="column"]:nth-of-type(2) button {
+    div[data-testid="column"]:nth-of-type(2) button.fab {
         right: 30px;
     }
 
-    /* Specific fix for "Open" buttons on cards */
-    button.open-button {
-        background-color: #d6f5d6 !important;
-        color: #123524 !important;
-        font-weight: 600;
+    .stButton > button.logout-button {
+        position: fixed;
+        top: 45px;
+        right: 25px;
+        z-index: 1000;
+        background-color: #e63946 !important;
+        color: white !important;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
     }
-
-
-
 </style>
 """, unsafe_allow_html=True)
+
 
 
 # --- Session State Initialization ---
