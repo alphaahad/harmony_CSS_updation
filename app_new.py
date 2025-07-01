@@ -110,6 +110,24 @@ st.markdown("""
         color: #123524 !important;
         font-weight: 600;
     }
+
+button {
+    background-color: #d6f5d6 !important;
+    color: #123524 !important;
+    font-weight: 600 !important;
+    border-radius: 10px !important;
+    border: none !important;
+}
+
+/* 🔧 Ensure hover/focus/click states are also styled */
+button:hover,
+button:focus,
+button:active {
+    background-color: #c1ecc2 !important;
+    color: #123524 !important;
+    outline: none !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
