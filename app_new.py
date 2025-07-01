@@ -85,10 +85,8 @@ for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.
 
 # --- Login Logic ---
 if "email" not in st.session_state:
-    st.session_state["email"] = "testuser@demo.com"
-    st.session_state["name"] = "Test User"
-    st.session_state["role"] = "demo"
-    st.success("🧪 Test login initialized")
+    login_screen()
+    st.stop()
 
 # --- Logout Button at top right ---
 st.markdown("""
