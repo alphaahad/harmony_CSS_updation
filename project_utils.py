@@ -127,17 +127,19 @@ def predict_label_schizo(text):
     if text.strip() == "":
         return 0.0, "Unknown"
     vec = vectorizer_schizo.transform([text])
-    pred = model_schizo.predict(vec)[0]
     score = model_schizo.decision_function(vec)[0]
     prob = expit(score)  # sigmoid
+    pred = 1 if prob >= 0.65 else 0  # <- Custom threshold (adjustable)
+
     confidence_score = round(prob * 100, 2) if pred == 1 else round((1 - prob) * 100, 2)
     prob_schizo = round(prob * 100, 2)
-    to_be_printed_schizo = (
+    message = (
         f"{confidence_score} % confident Schizophrenic"
         if pred == 1 else
         f"{confidence_score} % confident Not Schizophrenic"
     )
-    return prob_schizo, to_be_printed_schizo
+    return prob_schizo, message
+
 
 # --- Predict Both ---
 def predict_both(text):
