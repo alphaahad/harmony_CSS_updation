@@ -19,6 +19,7 @@ st.markdown("""
         color: #ffffff !important;
     }
 
+    /* Buttons - All default buttons */
     button {
         background-color: #222 !important;
         color: #fff !important;
@@ -34,16 +35,37 @@ st.markdown("""
         transform: scale(1.03);
     }
 
+    /* Input fields */
     section[data-testid="stTextInput"] input,
     section[data-testid="stTextArea"] textarea {
         background-color: #1a1a1a !important;
         color: #ffffff !important;
         border: 1px solid #444 !important;
-        border-radius: 8px;
-        padding: 10px;
-        font-weight: 500;
+        border-radius: 8px !important;
+        padding: 10px !important;
+        font-weight: 500 !important;
     }
 
+    /* Selectbox and Dropdown Fix */
+    section[data-testid="stSelectbox"] div[data-baseweb="select"] {
+        background-color: #1a1a1a !important;
+        color: #ffffff !important;
+        border: 1px solid #555 !important;
+        border-radius: 8px !important;
+    }
+
+    section[data-testid="stSelectbox"] div[data-baseweb="select"] * {
+        color: #ffffff !important;
+        background-color: #1a1a1a !important;
+    }
+
+    /* Dropdown menu item hover fix */
+    section[data-testid="stSelectbox"] div[data-baseweb="menu"] div[role="option"]:hover {
+        background-color: #333 !important;
+        color: #fff !important;
+    }
+
+    /* Note cards */
     .note-card {
         background-color: #1c1c1c;
         color: #ffffff !important;
@@ -60,12 +82,14 @@ st.markdown("""
         box-shadow: 3px 3px 12px rgba(255,255,255,0.15);
     }
 
+    /* Alerts */
     .stAlert {
         background-color: #222 !important;
         border-left: 5px solid #fff;
         color: #fff !important;
     }
 
+    /* Download button */
     .stDownloadButton > button {
         background-color: #222 !important;
         color: #fff !important;
@@ -76,6 +100,7 @@ st.markdown("""
         background-color: #444 !important;
     }
 
+    /* Floating Buttons */
     .stButton > button.fab {
         position: fixed;
         bottom: 20px;
@@ -96,11 +121,26 @@ st.markdown("""
         right: 30px;
     }
 
-
-
-
+    /* Logout button - Applied via JS */
+    .logout-button {
+        position: fixed;
+        top: 20px;
+        right: 25px;
+        z-index: 1000;
+        background-color: #f44336 !important;
+        color: white !important;
+        padding: 10px 20px !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        white-space: nowrap !important;
+        min-width: 90px !important;
+        text-align: center !important;
+    }
 </style>
 """, unsafe_allow_html=True)
+
 
 # --- Logout Button CSS ---
 st.markdown("""
