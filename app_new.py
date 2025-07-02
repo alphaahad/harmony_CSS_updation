@@ -19,7 +19,21 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* Input Fields */
+    button {
+        background-color: #222 !important;
+        color: #fff !important;
+        font-weight: 600 !important;
+        border: none !important;
+        border-radius: 10px !important;
+        padding: 0.6em 1.2em !important;
+        transition: all 0.2s ease-in-out;
+    }
+
+    button:hover {
+        background-color: #444 !important;
+        transform: scale(1.03);
+    }
+
     section[data-testid="stTextInput"] input,
     section[data-testid="stTextArea"] textarea {
         background-color: #1a1a1a !important;
@@ -30,45 +44,6 @@ st.markdown("""
         font-weight: 500;
     }
 
-    /* Global Button Styling — Targets ALL buttons */
-    button {
-        background-color: #222222 !important;
-        color: #ffffff !important;
-        font-weight: 600 !important;
-        border: none !important;
-        border-radius: 10px !important;
-        padding: 0.6em 1.2em !important;
-        transition: all 0.2s ease-in-out;
-    }
-
-    button:hover {
-        background-color: #444444 !important;
-        transform: scale(1.03);
-    }
-
-    /* Floating Buttons */
-    .stButton > button.fab {
-        position: fixed;
-        bottom: 20px;
-        background-color: #222222 !important;
-        color: #ffffff !important;
-        border: none;
-        padding: 12px 16px;
-        font-size: 22px;
-        border-radius: 50%;
-        box-shadow: 2px 2px 10px rgba(255,255,255,0.2);
-        z-index: 9999;
-    }
-
-    div[data-testid="column"]:nth-of-type(1) button.fab {
-        right: 90px;
-    }
-
-    div[data-testid="column"]:nth-of-type(2) button.fab {
-        right: 30px;
-    }
-
-    /* Note Card */
     .note-card {
         background-color: #1c1c1c;
         color: #ffffff !important;
@@ -85,39 +60,46 @@ st.markdown("""
         box-shadow: 3px 3px 12px rgba(255,255,255,0.15);
     }
 
-    /* Alerts */
     .stAlert {
-        background-color: #222222 !important;
-        border-left: 5px solid #ffffff;
-        color: #ffffff !important;
+        background-color: #222 !important;
+        border-left: 5px solid #fff;
+        color: #fff !important;
     }
 
-    /* Download Button */
     .stDownloadButton > button {
-        background-color: #222222 !important;
-        color: #ffffff !important;
+        background-color: #222 !important;
+        color: #fff !important;
         border-radius: 10px;
     }
 
     .stDownloadButton > button:hover {
-        background-color: #444444 !important;
+        background-color: #444 !important;
     }
 
+    .stButton > button.fab {
+        position: fixed;
+        bottom: 20px;
+        background-color: #222 !important;
+        color: #fff !important;
+        padding: 12px 16px;
+        font-size: 22px;
+        border-radius: 50%;
+        box-shadow: 2px 2px 10px rgba(255,255,255,0.2);
+        z-index: 9999;
+    }
+
+    div[data-testid="column"]:nth-of-type(1) button.fab {
+        right: 90px;
+    }
+
+    div[data-testid="column"]:nth-of-type(2) button.fab {
+        right: 30px;
+    }
 
 </style>
 """, unsafe_allow_html=True)
 
-# --- Session State ---
-for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.items():
-    if key not in st.session_state:
-        st.session_state[key] = val
-
-# --- Login Screen ---
-if "email" not in st.session_state:
-    login_screen()
-    st.stop()
-
-# --- Inject Logout Button CSS globally ---
+# --- Logout Button CSS ---
 st.markdown("""
     <style>
     .logout-button {
@@ -139,13 +121,13 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- Functional Logout Button ---
-if st.button("Logout", key="logout", help="Log out of Harmony"):
+# --- Logout Button Function ---
+if st.button("Logout", key="logout"):
     for key in list(st.session_state.keys()):
         del st.session_state[key]
     st.rerun()
 
-# --- Apply logout-button style using JS (Streamlit hack) ---
+# --- Add logout class using JS ---
 st.markdown("""
     <script>
     const buttons = window.parent.document.querySelectorAll('button');
@@ -157,6 +139,15 @@ st.markdown("""
     </script>
 """, unsafe_allow_html=True)
 
+# --- Session State ---
+for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.items():
+    if key not in st.session_state:
+        st.session_state[key] = val
+
+# --- Login ---
+if "email" not in st.session_state:
+    login_screen()
+    st.stop()
 
 # --- Floating Buttons ---
 space, col2, col1 = st.columns([25, 1, 1])
@@ -190,7 +181,6 @@ if st.session_state.view_note:
             with st.form("edit_note_form"):
                 new_title = st.text_input("Edit Title", value=title)
                 new_text = st.text_area("Edit Note", value=text, height=300)
-
                 col1, _, col2, _, col3, _, col4 = st.columns([1, 2, 1, 2, 1, 2, 1])
                 save = col1.form_submit_button("Save Changes")
                 update = col2.form_submit_button("Update Prediction")
@@ -229,11 +219,24 @@ elif st.session_state.show_analysis:
         else:
             with st.form("your_analysis"):
                 st.subheader("Choose which analysis you need to see")
-                selected = st.selectbox("Choose an option:", ["Depression", "Schizophrenia"])
+                selected = st.selectbox("Choose an option:", ["Depression", "Schizophrenia"], key="select_analysis")
 
                 col1, _, col2 = st.columns([1, 8, 1])
                 submit = col1.form_submit_button("Show Analysis")
                 back = col2.form_submit_button("Back to Notes")
+
+                # JS PATCH FOR SELECTBOX STYLE
+                st.markdown("""
+                <script>
+                const sb = window.parent.document.querySelectorAll('div[data-baseweb="select"]');
+                for (let el of sb) {
+                    el.style.backgroundColor = "#1a1a1a";
+                    el.style.color = "white";
+                    el.style.border = "1px solid #555";
+                    el.style.borderRadius = "8px";
+                }
+                </script>
+                """, unsafe_allow_html=True)
 
                 if back:
                     st.session_state.show_analysis = False
@@ -246,7 +249,7 @@ elif st.session_state.show_analysis:
     except Exception as e:
         st.error(f"Failed to fetch analysis data: {e}")
 
-# --- New Note Form ---
+# --- New Note ---
 elif st.session_state.show_form:
     with st.form("new_note"):
         st.subheader("Add a New Note")
@@ -308,7 +311,7 @@ else:
                         {preview_text}
                     </div>
                     """, unsafe_allow_html=True)
-                    # This will now inherit CSS styling from above
+
                     if st.button("Open", key=f"open_btn_{note['id']}_{idx}"):
                         st.session_state.view_note = note["id"]
                         st.rerun()
