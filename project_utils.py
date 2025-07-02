@@ -136,8 +136,9 @@ def predict_label_schizo(text):
     if text.strip() == "":
         return 0.0, "Unknown"
     
-    pred = model_schizo.predict([text])[0]
-    score = model_schizo.decision_function([text])[0]
+    pred = model_schizo.predict([text])[0]  # wrap in list
+    from scipy.special import expit
+    score = model_schizo.decision_function([text])[0]  # wrap in list
     prob = expit(score)
 
     confidence_score = round(prob * 100, 2) if pred == 1 else round((1 - prob) * 100, 2)
@@ -148,6 +149,7 @@ def predict_label_schizo(text):
         f"{confidence_score} % confident Not Schizophrenic"
     )
     return prob_schizo, to_be_printed_schizo
+
 
 def predict_both(text):
     schizo, to_be_printed_schizo = predict_label_schizo(text)
