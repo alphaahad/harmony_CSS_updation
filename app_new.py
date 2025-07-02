@@ -103,21 +103,7 @@ st.markdown("""
         background-color: #444444 !important;
     }
 
-    /* Logout Button (fixed shape, no wrapping) */
-.logout-button {
-    position: fixed;
-    top: 45px;
-    right: 25px;
-    z-index: 1000;
-    background-color: #f44336 !important;
-    color: white !important;
-    padding: 10px 20px !important;
-    border-radius: 8px !important;
-    font-size: 14px !important;
-    white-space: nowrap !important;
-    min-width: 80px !important;
-    text-align: center !important;
-}
+
 
 </style>
 """, unsafe_allow_html=True)
