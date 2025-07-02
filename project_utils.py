@@ -136,13 +136,12 @@ def predict_label_schizo(text):
     if not isinstance(text, str) or text.strip() == "":
         return 0.0, "Unknown"
     
-    text_input = [text]  # make sure it's a list of one sample
-    
+    text_input = [text]  # convert to list for pipeline
+
     try:
         pred = model_schizo.predict(text_input)[0]
 
-        # For probability approximation via decision_function + sigmoid
-        from scipy.special import expit
+        from scipy.special import expit  # sigmoid for probability
         score = model_schizo.decision_function(text_input)[0]
         prob = float(expit(score))
 
@@ -156,16 +155,24 @@ def predict_label_schizo(text):
         return prob_schizo, message
 
     except Exception as e:
-        st.error(f"Prediction failed: {e}")
-        return 0.0, "Error"
-
-
+        raise RuntimeError(f"SCHIZO prediction failed: {e}")
 
 def predict_both(text):
-    schizo, to_be_printed_schizo = predict_label_schizo(text)
-    depression, to_be_printed_dep = predict_label_depression(text)
+    try:
+        schizo, to_be_printed_schizo = predict_label_schizo(text)
+    except Exception as e:
+        schizo = 0.0
+        to_be_printed_schizo = f"Error: {str(e)}"
+
+    try:
+        depression, to_be_printed_dep = predict_label_depression(text)
+    except Exception as e:
+        depression = 0.0
+        to_be_printed_dep = f"Error: {str(e)}"
+
     msg = to_be_printed_schizo + " and " + to_be_printed_dep
     return schizo, depression, msg
+
 
 def preview(text, lines=2):
     lines_list = text.splitlines()
