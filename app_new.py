@@ -19,7 +19,7 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* Inputs */
+    /* Input Fields */
     section[data-testid="stTextInput"] input,
     section[data-testid="stTextArea"] textarea {
         background-color: #1a1a1a !important;
@@ -27,32 +27,35 @@ st.markdown("""
         border: 1px solid #444 !important;
         border-radius: 8px;
         padding: 10px;
+        font-weight: 500;
     }
 
-    /* Standard buttons */
-    div.stButton > button {
-        background-color: #1a1a1a !important;
+    /* Global Button Styling — Targets ALL buttons */
+    button {
+        background-color: #222222 !important;
         color: #ffffff !important;
-        border-radius: 10px;
-        font-weight: 600;
-        padding: 0.6em 1.2em;
+        font-weight: 600 !important;
+        border: none !important;
+        border-radius: 10px !important;
+        padding: 0.6em 1.2em !important;
         transition: all 0.2s ease-in-out;
     }
 
-    div.stButton > button:hover {
-        background-color: #333333 !important;
-        transform: scale(1.02);
+    button:hover {
+        background-color: #444444 !important;
+        transform: scale(1.03);
     }
 
     /* Floating Buttons */
     .stButton > button.fab {
         position: fixed;
         bottom: 20px;
-        background-color: #1a1a1a !important;
+        background-color: #222222 !important;
         color: #ffffff !important;
-        border-radius: 50%;
-        font-size: 22px;
+        border: none;
         padding: 12px 16px;
+        font-size: 22px;
+        border-radius: 50%;
         box-shadow: 2px 2px 10px rgba(255,255,255,0.2);
         z-index: 9999;
     }
@@ -65,9 +68,9 @@ st.markdown("""
         right: 30px;
     }
 
-    /* Note Cards */
+    /* Note Card */
     .note-card {
-        background-color: #1a1a1a;
+        background-color: #1c1c1c;
         color: #ffffff !important;
         border-radius: 12px;
         padding: 15px;
@@ -85,32 +88,32 @@ st.markdown("""
     /* Alerts */
     .stAlert {
         background-color: #222222 !important;
-        color: #ffffff !important;
         border-left: 5px solid #ffffff;
+        color: #ffffff !important;
     }
 
+    /* Download Button */
     .stDownloadButton > button {
-        background-color: #1a1a1a !important;
+        background-color: #222222 !important;
         color: #ffffff !important;
         border-radius: 10px;
     }
 
     .stDownloadButton > button:hover {
-        background-color: #333333 !important;
+        background-color: #444444 !important;
     }
 
-    /* Logout */
-    .stButton > button.logout-button {
+    /* Specific logout button fix */
+    .logout-button {
         position: fixed;
         top: 45px;
         right: 25px;
         z-index: 1000;
         background-color: #f44336 !important;
         color: white !important;
-        padding: 10px 15px;
-        border: none;
-        border-radius: 8px;
-        font-size: 14px;
+        padding: 10px 15px !important;
+        border-radius: 8px !important;
+        font-size: 14px !important;
     }
 </style>
 """, unsafe_allow_html=True)
