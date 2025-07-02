@@ -135,10 +135,26 @@ if "email" not in st.session_state:
 # --- Logout Button ---
 space, col1 = st.columns([15, 1])
 with col1:
+    st.markdown("""
+    <style>
+    div.stButton > button.logout-button {
+        background-color: #f44336 !important;
+        color: white !important;
+        padding: 10px 20px !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-size: 14px !important;
+        white-space: nowrap !important;
+        min-width: 90px !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     if st.button("Logout", key="logout", help="Log out of Harmony"):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
         st.rerun()
+
 
 # --- Floating Buttons ---
 space, col2, col1 = st.columns([25, 1, 1])
