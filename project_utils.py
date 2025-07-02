@@ -1,4 +1,3 @@
-# Top of file (same as yours, minor cleanup)
 import os
 import pandas as pd
 import bcrypt
@@ -11,11 +10,7 @@ import requests
 from dotenv import load_dotenv
 import re
 from datetime import datetime
-from scipy.special import expit  # for sigmoid
-from sentence_transformers import SentenceTransformer
-
-# Load SBERT model
-sbert_encoder = SentenceTransformer('all-MiniLM-L6-v2')
+from scipy.special import expit  # sigmoid
 
 # --- Load environment variables ---
 load_dotenv()
@@ -31,16 +26,18 @@ HEADERS = {
 # --- Load ML Models ---
 model_depression = joblib.load("models/depression_model.pkl")
 vectorizer_depression = joblib.load("models/depression_vectorizer.pkl")
-model_schizo = joblib.load("models/schizophrenia_model.pkl")  # SBERT+SVM pipeline
+model_schizo = joblib.load("models/schizophrenia_model.pkl")
+vectorizer_schizo = joblib.load("models/schizophrenia_vectorizer.pkl")
 
 # --- Email Validation ---
 def is_valid_email(email: str) -> bool:
     pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     return re.match(pattern, email) is not None
 
-# --- Auth Logic ---
+# --- Login/Register Screen ---
 def login_screen():
     st.subheader("🔐 Welcome to HARMONY")
+
     login_tab, register_tab = st.tabs(["Log In", "Register"])
 
     with login_tab:
@@ -83,7 +80,6 @@ def handle_login(user, email, password):
     if not user:
         st.error("No account found with this email.")
         return
-
     if bcrypt.checkpw(password.encode(), user["password"].encode()):
         st.session_state["email"] = user["email"]
         st.session_state["name"] = user["name"]
@@ -96,18 +92,11 @@ def handle_register(user, email, name, password):
     if not is_valid_email(email):
         st.warning("Please enter a valid email address.")
         return
-
     if user:
         st.warning("An account with this email already exists. Please login instead.")
         return
-
     hashed_pw = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-    new_user = {
-        "email": email,
-        "name": name,
-        "password": hashed_pw
-    }
-
+    new_user = {"email": email, "name": name, "password": hashed_pw}
     try:
         res = requests.post(f"{SUPABASE_URL}/rest/v1/Users", json=new_user, headers=HEADERS)
         if res.status_code == 201:
@@ -117,7 +106,7 @@ def handle_register(user, email, name, password):
     except Exception as e:
         st.error(f"Failed to register: {str(e)}")
 
-# --- Prediction Functions ---
+# --- Predict Depression (TF-IDF + LR) ---
 def predict_label_depression(text):
     if text.strip() == "":
         return 0.0, "Unknown"
@@ -133,47 +122,31 @@ def predict_label_depression(text):
     )
     return prob_depressed, to_be_printed_dep
 
+# --- Predict Schizophrenia (TF-IDF + SVM) ---
 def predict_label_schizo(text):
-    if not isinstance(text, str) or text.strip() == "":
+    if text.strip() == "":
         return 0.0, "Unknown"
+    vec = vectorizer_schizo.transform([text])
+    pred = model_schizo.predict(vec)[0]
+    score = model_schizo.decision_function(vec)[0]
+    prob = expit(score)  # sigmoid
+    confidence_score = round(prob * 100, 2) if pred == 1 else round((1 - prob) * 100, 2)
+    prob_schizo = round(prob * 100, 2)
+    to_be_printed_schizo = (
+        f"{confidence_score} % confident Schizophrenic"
+        if pred == 1 else
+        f"{confidence_score} % confident Not Schizophrenic"
+    )
+    return prob_schizo, to_be_printed_schizo
 
-    try:
-        # Convert raw text → SBERT embedding
-        embedding = sbert_encoder.encode([text])  # returns 2D numpy array
-        pred = model_schizo.predict(embedding)[0]
-        score = model_schizo.decision_function(embedding)[0]
-        prob = float(expit(score))
-
-        confidence_score = round(prob * 100, 2) if pred == 1 else round((1 - prob) * 100, 2)
-        prob_schizo = round(prob * 100, 2)
-
-        message = (
-            f"{confidence_score} % confident Schizophrenic"
-            if pred == 1 else
-            f"{confidence_score} % confident Not Schizophrenic"
-        )
-        return prob_schizo, message
-
-    except Exception as e:
-        raise RuntimeError(f"SCHIZO prediction failed: {e}")
-
+# --- Predict Both ---
 def predict_both(text):
-    try:
-        schizo, to_be_printed_schizo = predict_label_schizo(text)
-    except Exception as e:
-        schizo = 0.0
-        to_be_printed_schizo = f"Error: {str(e)}"
-
-    try:
-        depression, to_be_printed_dep = predict_label_depression(text)
-    except Exception as e:
-        depression = 0.0
-        to_be_printed_dep = f"Error: {str(e)}"
-
+    schizo, to_be_printed_schizo = predict_label_schizo(text)
+    depression, to_be_printed_dep = predict_label_depression(text)
     msg = to_be_printed_schizo + " and " + to_be_printed_dep
     return schizo, depression, msg
 
-# --- Utility Preview ---
+# --- Preview Text ---
 def preview(text, lines=2):
     lines_list = text.splitlines()
     short = "\n".join(lines_list[:lines])
@@ -223,7 +196,7 @@ def delete_note_from_supabase(note_id):
     except Exception as e:
         st.error(f"Failed to delete note: {e}")
 
-# --- Visualization ---
+# --- Streamlit Plots ---
 def show_analysis_depression():
     try:
         url = f"{SUPABASE_URL}/rest/v1/Journals?user_id=eq.{st.session_state['user_id']}&select=date_time,pred_depression&order=date_time"
@@ -234,7 +207,6 @@ def show_analysis_depression():
             return
         df = pd.DataFrame(data)
         df['date_time'] = pd.to_datetime(df['date_time'])
-
         plt.figure(figsize=(9, 4))
         plt.plot(df['date_time'], df['pred_depression'], marker='o', linestyle='-', color='blue')
         plt.xlabel('Date & Time')
@@ -245,7 +217,6 @@ def show_analysis_depression():
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d %B %y, %H:%M'))
         plt.tight_layout()
         st.pyplot(plt)
-
     except Exception as e:
         st.error(f"Error loading depression analysis: {e}")
 
@@ -259,7 +230,6 @@ def show_analysis_schizo():
             return
         df = pd.DataFrame(data)
         df['date_time'] = pd.to_datetime(df['date_time'])
-
         plt.figure(figsize=(9, 4))
         plt.plot(df['date_time'], df['pred_schizophrenia'], marker='o', linestyle='-', color='blue')
         plt.xlabel('Date & Time')
@@ -270,6 +240,5 @@ def show_analysis_schizo():
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d %B %y, %H:%M'))
         plt.tight_layout()
         st.pyplot(plt)
-
     except Exception as e:
         st.error(f"Error loading schizophrenia analysis: {e}")
