@@ -222,6 +222,18 @@ elif st.session_state.show_analysis:
             with st.form("your_analysis"):
                 st.subheader("Choose which analysis you need to see")
                 selected = st.selectbox("Choose an option:", ["Depression", "Schizophrenia"], key="select_analysis")
+                st.markdown("""
+<script>
+const dropdowns = window.parent.document.querySelectorAll('div[data-baseweb="select"]');
+dropdowns.forEach(drop => {
+    drop.classList.add("custom-dropdown");
+});
+const menus = window.parent.document.querySelectorAll('div[data-baseweb="menu"] div');
+menus.forEach(option => {
+    option.classList.add("custom-dropdown-option");
+});
+</script>
+""", unsafe_allow_html=True)
 
                 col1, _, col2 = st.columns([1, 8, 1])
                 submit = col1.form_submit_button("Show Analysis")
