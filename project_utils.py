@@ -10,6 +10,7 @@ import requests
 from dotenv import load_dotenv
 import re
 from datetime import datetime
+from scipy.special import expit  # for sigmoid
 
 # --- Load environment variables ---
 load_dotenv()
@@ -25,15 +26,14 @@ HEADERS = {
 # --- Load ML Models ---
 model_depression = joblib.load("models/depression_model.pkl")
 vectorizer_depression = joblib.load("models/depression_vectorizer.pkl")
-model_schizo = joblib.load("models/schizophrenia_model.pkl")
-vectorizer_schizo = joblib.load("models/schizophrenia_vectorizer.pkl")
+model_schizo = joblib.load("models/schizophrenia_model.pkl")  # SBERT+SVM pipeline
 
+# --- Utilities ---
 def is_valid_email(email: str) -> bool:
     pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     return re.match(pattern, email) is not None
 
 # --- Auth Logic ---
-
 def login_screen():
     st.subheader("🔐 Welcome to HARMONY")
 
@@ -66,8 +66,7 @@ def login_screen():
             user = get_user_by_email(email)
             handle_register(user, email, name, password)
 
-# --- Helper Functions ---
-
+# --- Auth Helpers ---
 def get_user_by_email(email):
     try:
         url = f"{SUPABASE_URL}/rest/v1/Users?email=eq.{email}&select=*"
@@ -97,7 +96,7 @@ def handle_register(user, email, name, password):
         return
 
     if user:
-        st.warning("An account with this email already exists. Please login instead")
+        st.warning("An account with this email already exists. Please login instead.")
         return
 
     hashed_pw = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
@@ -116,26 +115,30 @@ def handle_register(user, email, name, password):
     except Exception as e:
         st.error(f"Failed to register: {str(e)}")
 
+# --- Prediction: Depression (TF-IDF + LR) ---
 def predict_label_depression(text):
     if text.strip() == "":
         return 0.0, "Unknown"
     vec = vectorizer_depression.transform([text])
     pred = model_depression.predict(vec)[0]
     probs = model_depression.predict_proba(vec)[0]
-    confidence_score = str(round(np.max(probs)*100,2))
-    prob_depressed = round(float(probs[1])*100,2)
-    to_be_printed_dep = (f"{confidence_score} % confident Depressed" if pred == 1 else f"{confidence_score} % confident Not Depressed")
+    confidence_score = str(round(np.max(probs)*100, 2))
+    prob_depressed = round(float(probs[1])*100, 2)
+    to_be_printed_dep = (
+        f"{confidence_score} % confident Depressed"
+        if pred == 1 else
+        f"{confidence_score} % confident Not Depressed"
+    )
     return prob_depressed, to_be_printed_dep
 
+# --- Prediction: Schizophrenia (SBERT + SVM) ---
 def predict_label_schizo(text):
     if text.strip() == "":
         return 0.0, "Unknown"
-    vec = vectorizer_schizo.transform([text])
-    pred = model_schizo.predict(vec)[0]
     
-    from scipy.special import expit  # sigmoid function
-    score = model_schizo.decision_function(vec)[0]
-    prob = expit(score)  # convert margin to probability
+    pred = model_schizo.predict([text])[0]
+    score = model_schizo.decision_function([text])[0]
+    prob = expit(score)
 
     confidence_score = round(prob * 100, 2) if pred == 1 else round((1 - prob) * 100, 2)
     prob_schizo = round(prob * 100, 2)
@@ -146,18 +149,18 @@ def predict_label_schizo(text):
     )
     return prob_schizo, to_be_printed_schizo
 
-
 def predict_both(text):
     schizo, to_be_printed_schizo = predict_label_schizo(text)
     depression, to_be_printed_dep = predict_label_depression(text)
     msg = to_be_printed_schizo + " and " + to_be_printed_dep
-    return (schizo, depression, msg)
+    return schizo, depression, msg
 
 def preview(text, lines=2):
     lines_list = text.splitlines()
     short = "\n".join(lines_list[:lines])
     return short + ("..." if len(lines_list) > lines else "")
 
+# --- Supabase: Note Storage ---
 def save_note_to_supabase(title, body, pred_depression, pred_schizophrenia, prediction_message):
     new_note = {
         "date_time": datetime.now().isoformat(),
@@ -201,6 +204,7 @@ def delete_note_from_supabase(note_id):
     except Exception as e:
         st.error(f"Failed to delete note: {e}")
 
+# --- Streamlit Plots ---
 def show_analysis_depression():
     try:
         url = f"{SUPABASE_URL}/rest/v1/Journals?user_id=eq.{st.session_state['user_id']}&select=date_time,pred_depression&order=date_time"
