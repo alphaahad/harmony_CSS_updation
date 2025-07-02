@@ -103,26 +103,6 @@ st.markdown("""
         background-color: #444444 !important;
     }
 
-    /* Fix Streamlit selectbox appearance for dark theme */
-section[data-testid="stSelectbox"] div[data-baseweb="select"] {
-    background-color: #1a1a1a !important;
-    color: #ffffff !important;
-    border: 1px solid #555 !important;
-    border-radius: 8px !important;
-}
-
-/* Dropdown menu styling */
-section[data-testid="stSelectbox"] div[data-baseweb="popover"] {
-    background-color: #1a1a1a !important;
-    color: #ffffff !important;
-}
-
-/* Text inside the dropdown options */
-section[data-testid="stSelectbox"] div[data-baseweb="menu"] > div {
-    color: #ffffff !important;
-    background-color: #1a1a1a !important;
-}
-
 
 </style>
 """, unsafe_allow_html=True)
