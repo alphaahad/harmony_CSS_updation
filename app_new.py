@@ -96,18 +96,6 @@ st.markdown("""
         right: 30px;
     }
 
-    /* Selectbox container */
-div[data-baseweb="select"] {
-    background-color: #1a1a1a !important;
-    color: white !important;
-    border: 1px solid #555 !important;
-    border-radius: 8px !important;
-}
-
-/* Placeholder and input text */
-div[data-baseweb="select"] input {
-    color: white !important;
-}
 
 
 </style>
