@@ -12,6 +12,10 @@ from dotenv import load_dotenv
 import re
 from datetime import datetime
 from scipy.special import expit  # for sigmoid
+from sentence_transformers import SentenceTransformer
+
+# Load SBERT model
+sbert_encoder = SentenceTransformer('all-MiniLM-L6-v2')
 
 # --- Load environment variables ---
 load_dotenv()
@@ -134,9 +138,10 @@ def predict_label_schizo(text):
         return 0.0, "Unknown"
 
     try:
-        text_input = [text]  # wrap for 2D shape
-        pred = model_schizo.predict(text_input)[0]
-        score = model_schizo.decision_function(text_input)[0]
+        # Convert raw text → SBERT embedding
+        embedding = sbert_encoder.encode([text])  # returns 2D numpy array
+        pred = model_schizo.predict(embedding)[0]
+        score = model_schizo.decision_function(embedding)[0]
         prob = float(expit(score))
 
         confidence_score = round(prob * 100, 2) if pred == 1 else round((1 - prob) * 100, 2)
