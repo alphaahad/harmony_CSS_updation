@@ -1,3 +1,4 @@
+# Top of file (same as yours, minor cleanup)
 import os
 import pandas as pd
 import bcrypt
@@ -28,7 +29,7 @@ model_depression = joblib.load("models/depression_model.pkl")
 vectorizer_depression = joblib.load("models/depression_vectorizer.pkl")
 model_schizo = joblib.load("models/schizophrenia_model.pkl")  # SBERT+SVM pipeline
 
-# --- Utilities ---
+# --- Email Validation ---
 def is_valid_email(email: str) -> bool:
     pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     return re.match(pattern, email) is not None
@@ -36,7 +37,6 @@ def is_valid_email(email: str) -> bool:
 # --- Auth Logic ---
 def login_screen():
     st.subheader("🔐 Welcome to HARMONY")
-
     login_tab, register_tab = st.tabs(["Log In", "Register"])
 
     with login_tab:
@@ -48,7 +48,6 @@ def login_screen():
             if not email or not password:
                 st.warning("Please enter both email and password.")
                 return
-
             user = get_user_by_email(email)
             handle_login(user, email, password)
 
@@ -62,7 +61,6 @@ def login_screen():
             if not name or not email or not password:
                 st.warning("Please fill out all fields to register.")
                 return
-
             user = get_user_by_email(email)
             handle_register(user, email, name, password)
 
@@ -115,7 +113,7 @@ def handle_register(user, email, name, password):
     except Exception as e:
         st.error(f"Failed to register: {str(e)}")
 
-# --- Prediction: Depression (TF-IDF + LR) ---
+# --- Prediction Functions ---
 def predict_label_depression(text):
     if text.strip() == "":
         return 0.0, "Unknown"
@@ -131,22 +129,19 @@ def predict_label_depression(text):
     )
     return prob_depressed, to_be_printed_dep
 
-# --- Prediction: Schizophrenia (SBERT + SVM) ---
 def predict_label_schizo(text):
     if not isinstance(text, str) or text.strip() == "":
         return 0.0, "Unknown"
-    
-    text_input = [text]  # convert to list for pipeline
 
     try:
+        text_input = [text]  # wrap for 2D shape
         pred = model_schizo.predict(text_input)[0]
-
-        from scipy.special import expit  # sigmoid for probability
         score = model_schizo.decision_function(text_input)[0]
         prob = float(expit(score))
 
         confidence_score = round(prob * 100, 2) if pred == 1 else round((1 - prob) * 100, 2)
         prob_schizo = round(prob * 100, 2)
+
         message = (
             f"{confidence_score} % confident Schizophrenic"
             if pred == 1 else
@@ -173,7 +168,7 @@ def predict_both(text):
     msg = to_be_printed_schizo + " and " + to_be_printed_dep
     return schizo, depression, msg
 
-
+# --- Utility Preview ---
 def preview(text, lines=2):
     lines_list = text.splitlines()
     short = "\n".join(lines_list[:lines])
@@ -223,7 +218,7 @@ def delete_note_from_supabase(note_id):
     except Exception as e:
         st.error(f"Failed to delete note: {e}")
 
-# --- Streamlit Plots ---
+# --- Visualization ---
 def show_analysis_depression():
     try:
         url = f"{SUPABASE_URL}/rest/v1/Journals?user_id=eq.{st.session_state['user_id']}&select=date_time,pred_depression&order=date_time"
