@@ -109,29 +109,6 @@ div[data-baseweb="select"] input {
     color: white !important;
 }
 
-/* Dropdown Menu Panel */
-div[data-baseweb="popover"] {
-    background-color: #1a1a1a !important;
-    color: white !important;
-    border-radius: 8px !important;
-}
-
-/* Individual dropdown options */
-div[data-baseweb="menu"] > div {
-    background-color: #1a1a1a !important;
-    color: white !important;
-}
-
-/* Highlighted/hovered dropdown option */
-div[data-baseweb="option"]:hover {
-    background-color: #333333 !important;
-}
-
-/* Selected option */
-div[data-baseweb="option"][aria-selected="true"] {
-    background-color: #444444 !important;
-}
-
 
 </style>
 """, unsafe_allow_html=True)
