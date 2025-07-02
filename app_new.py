@@ -5,7 +5,7 @@ from project_utils import *
 st.set_page_config(page_title="Harmony", layout="wide")
 st.title("Project Harmony")
 
-# --- Custom CSS Styling ---
+# --- Global Dark Theme CSS ---
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -19,7 +19,7 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* Input fields */
+    /* Inputs */
     section[data-testid="stTextInput"] input,
     section[data-testid="stTextArea"] textarea {
         background-color: #1a1a1a !important;
@@ -27,35 +27,32 @@ st.markdown("""
         border: 1px solid #444 !important;
         border-radius: 8px;
         padding: 10px;
-        font-weight: 500;
     }
 
-    /* All standard buttons */
+    /* Standard buttons */
     div.stButton > button {
-        background-color: #222222 !important;
+        background-color: #1a1a1a !important;
         color: #ffffff !important;
-        font-weight: 600;
-        border: none;
         border-radius: 10px;
+        font-weight: 600;
         padding: 0.6em 1.2em;
         transition: all 0.2s ease-in-out;
     }
 
     div.stButton > button:hover {
-        background-color: #444444 !important;
-        transform: scale(1.03);
+        background-color: #333333 !important;
+        transform: scale(1.02);
     }
 
     /* Floating Buttons */
     .stButton > button.fab {
         position: fixed;
         bottom: 20px;
-        background-color: #222222 !important;
+        background-color: #1a1a1a !important;
         color: #ffffff !important;
-        border: none;
-        padding: 12px 16px;
-        font-size: 22px;
         border-radius: 50%;
+        font-size: 22px;
+        padding: 12px 16px;
         box-shadow: 2px 2px 10px rgba(255,255,255,0.2);
         z-index: 9999;
     }
@@ -70,7 +67,7 @@ st.markdown("""
 
     /* Note Cards */
     .note-card {
-        background-color: #1c1c1c;
+        background-color: #1a1a1a;
         color: #ffffff !important;
         border-radius: 12px;
         padding: 15px;
@@ -88,22 +85,21 @@ st.markdown("""
     /* Alerts */
     .stAlert {
         background-color: #222222 !important;
-        border-left: 5px solid #ffffff;
         color: #ffffff !important;
+        border-left: 5px solid #ffffff;
     }
 
-    /* Download Button */
     .stDownloadButton > button {
-        background-color: #222222 !important;
+        background-color: #1a1a1a !important;
         color: #ffffff !important;
         border-radius: 10px;
     }
 
     .stDownloadButton > button:hover {
-        background-color: #444444 !important;
+        background-color: #333333 !important;
     }
 
-    /* Logout Button */
+    /* Logout */
     .stButton > button.logout-button {
         position: fixed;
         top: 45px;
@@ -119,26 +115,26 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- Session State Initialization ---
+# --- Session State ---
 for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.items():
     if key not in st.session_state:
         st.session_state[key] = val
 
-# --- Login Logic ---
+# --- Login Screen ---
 if "email" not in st.session_state:
     login_screen()
     st.stop()
 
 # --- Logout Button ---
-space, col1 = st.columns([15,1])
+space, col1 = st.columns([15, 1])
 with col1:
     if st.button("Logout", key="logout", help="Log out of Harmony"):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
         st.rerun()
 
-# --- Floating Add & Chart Buttons ---
-space, col2, col1 = st.columns([25,1,1])
+# --- Floating Buttons ---
+space, col2, col1 = st.columns([25, 1, 1])
 with col1:
     if st.button("➕", key="float-add"):
         st.session_state.show_form = True
@@ -150,7 +146,7 @@ with col2:
         st.session_state.view_note = None
         st.session_state.show_analysis = True
 
-# --- Note Viewer ---
+# --- View Note ---
 if st.session_state.view_note:
     try:
         df = get_notes_from_supabase()
@@ -159,43 +155,42 @@ if st.session_state.view_note:
 
         if not result.empty:
             note = result.iloc[0]
-            note_title = note["title"]
-            note_text = note["body"]
-            prediction_message = note["prediction_message"]
+            title = note["title"]
+            text = note["body"]
+            prediction = note["prediction_message"]
 
-            st.subheader(note_title)
-            st.markdown(prediction_message)
+            st.subheader(title)
+            st.markdown(prediction)
 
             with st.form("edit_note_form"):
-                new_title = st.text_input("Edit Title", value=note_title)
-                new_text = st.text_area("Edit Note", value=note_text, height=300)
+                new_title = st.text_input("Edit Title", value=title)
+                new_text = st.text_area("Edit Note", value=text, height=300)
 
                 col1, _, col2, _, col3, _, col4 = st.columns([1, 2, 1, 2, 1, 2, 1])
-                save_button = col1.form_submit_button("Save Changes")
-                update_pred_button = col2.form_submit_button("Update Prediction")
-                delete_button = col3.form_submit_button("Delete Note")
-                back_button = col4.form_submit_button("Back to All Notes")
+                save = col1.form_submit_button("Save Changes")
+                update = col2.form_submit_button("Update Prediction")
+                delete = col3.form_submit_button("Delete Note")
+                back = col4.form_submit_button("Back to All Notes")
 
-            if save_button:
-                prediction = predict_both(new_text)
+            if save:
+                p = predict_both(new_text)
                 delete_note_from_supabase(int(note_id))
-                save_note_to_supabase(new_title, new_text, prediction[0], prediction[1], prediction[2])
+                save_note_to_supabase(new_title, new_text, p[0], p[1], p[2])
                 st.session_state.view_note = None
                 st.rerun()
-            elif back_button:
+            elif update:
+                p = predict_both(new_text)
+                st.info(f"**Updated Prediction:** {p[2]}")
+            elif delete:
+                delete_note_from_supabase(int(note_id))
                 st.session_state.view_note = None
                 st.rerun()
-            elif update_pred_button:
-                new_prediction = predict_both(new_text)
-                st.info(f"**Updated Prediction:** {new_prediction[2]}")
-            elif delete_button:
-                delete_note_from_supabase(int(note_id))
+            elif back:
                 st.session_state.view_note = None
                 st.rerun()
         else:
             st.error("Note not found.")
             st.session_state.view_note = None
-
     except Exception as e:
         st.error(f"Failed to load note: {e}")
         st.session_state.view_note = None
@@ -212,23 +207,21 @@ elif st.session_state.show_analysis:
                 selected = st.selectbox("Choose an option:", ["Depression", "Schizophrenia"])
 
                 col1, _, col2 = st.columns([1, 8, 1])
-                submit_analysis = col1.form_submit_button("Show Analysis")
-                back_button = col2.form_submit_button("Back to Notes")
+                submit = col1.form_submit_button("Show Analysis")
+                back = col2.form_submit_button("Back to Notes")
 
-                if back_button:
-                    st.session_state.view_note = None
+                if back:
                     st.session_state.show_analysis = False
                     st.rerun()
-
-                if submit_analysis:
+                if submit:
                     if selected == "Depression":
                         show_analysis_depression()
-                    elif selected == "Schizophrenia":
+                    else:
                         show_analysis_schizo()
     except Exception as e:
         st.error(f"Failed to fetch analysis data: {e}")
 
-# --- Note Form ---
+# --- New Note Form ---
 elif st.session_state.show_form:
     with st.form("new_note"):
         st.subheader("Add a New Note")
@@ -242,39 +235,31 @@ elif st.session_state.show_form:
             st.info(f"Prediction: {st.session_state.pending_prediction}")
 
         col1, _, col2, _, col3 = st.columns([2, 5, 1, 5, 1])
-        get_pred = col1.form_submit_button("Get Prediction")
+        pred = col1.form_submit_button("Get Prediction")
         save = col2.form_submit_button("Save")
         cancel = col3.form_submit_button("Cancel")
 
-    if get_pred:
+    if pred:
         if body.strip() == "":
             st.warning("Note body is empty.")
         else:
             st.session_state.pending_prediction = predict_both(body)[2]
             st.rerun()
-
     elif save:
         if title.strip() == "":
             st.warning("Please enter a title.")
         else:
-            prediction = predict_both(body)
-            save_note_to_supabase(
-                title=title,
-                body=body,
-                pred_depression=prediction[0],
-                pred_schizophrenia=prediction[1],
-                prediction_message=prediction[2]
-            )
+            p = predict_both(body)
+            save_note_to_supabase(title, body, p[0], p[1], p[2])
             st.session_state.pending_prediction = None
             st.session_state.show_form = False
             st.rerun()
-
     elif cancel:
         st.session_state.pending_prediction = None
         st.session_state.show_form = False
         st.rerun()
 
-# --- Saved Notes Display ---
+# --- Notes Grid ---
 else:
     notes = get_notes_from_supabase()
     if notes.empty:
@@ -298,7 +283,7 @@ else:
                         {preview_text}
                     </div>
                     """, unsafe_allow_html=True)
-
-                    if st.button("Open", key=f"open_btn_{note['id']}_{idx}", help="Click to open note"):
+                    # This will now inherit CSS styling from above
+                    if st.button("Open", key=f"open_btn_{note['id']}_{idx}"):
                         st.session_state.view_note = note["id"]
                         st.rerun()
