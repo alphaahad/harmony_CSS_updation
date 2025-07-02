@@ -132,11 +132,20 @@ def predict_label_schizo(text):
         return 0.0, "Unknown"
     vec = vectorizer_schizo.transform([text])
     pred = model_schizo.predict(vec)[0]
-    probs = model_schizo.predict_proba(vec)[0]
-    confidence_score = str(round(np.max(probs)*100,2))
-    prob_schizo = round(float(probs[1])*100,2)
-    to_be_printed_schizo = (f"{confidence_score} % confident Schizophrenic" if pred == 1 else f"{confidence_score} % confident Not Schizophrenic")
+    
+    from scipy.special import expit  # sigmoid function
+    score = model_schizo.decision_function(vec)[0]
+    prob = expit(score)  # convert margin to probability
+
+    confidence_score = round(prob * 100, 2) if pred == 1 else round((1 - prob) * 100, 2)
+    prob_schizo = round(prob * 100, 2)
+    to_be_printed_schizo = (
+        f"{confidence_score} % confident Schizophrenic"
+        if pred == 1 else
+        f"{confidence_score} % confident Not Schizophrenic"
+    )
     return prob_schizo, to_be_printed_schizo
+
 
 def predict_both(text):
     schizo, to_be_printed_schizo = predict_label_schizo(text)
