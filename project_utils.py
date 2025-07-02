@@ -133,22 +133,32 @@ def predict_label_depression(text):
 
 # --- Prediction: Schizophrenia (SBERT + SVM) ---
 def predict_label_schizo(text):
-    if text.strip() == "":
+    if not isinstance(text, str) or text.strip() == "":
         return 0.0, "Unknown"
     
-    pred = model_schizo.predict([text])[0]  # wrap in list
-    from scipy.special import expit
-    score = model_schizo.decision_function([text])[0]  # wrap in list
-    prob = expit(score)
+    text_input = [text]  # make sure it's a list of one sample
+    
+    try:
+        pred = model_schizo.predict(text_input)[0]
 
-    confidence_score = round(prob * 100, 2) if pred == 1 else round((1 - prob) * 100, 2)
-    prob_schizo = round(prob * 100, 2)
-    to_be_printed_schizo = (
-        f"{confidence_score} % confident Schizophrenic"
-        if pred == 1 else
-        f"{confidence_score} % confident Not Schizophrenic"
-    )
-    return prob_schizo, to_be_printed_schizo
+        # For probability approximation via decision_function + sigmoid
+        from scipy.special import expit
+        score = model_schizo.decision_function(text_input)[0]
+        prob = float(expit(score))
+
+        confidence_score = round(prob * 100, 2) if pred == 1 else round((1 - prob) * 100, 2)
+        prob_schizo = round(prob * 100, 2)
+        message = (
+            f"{confidence_score} % confident Schizophrenic"
+            if pred == 1 else
+            f"{confidence_score} % confident Not Schizophrenic"
+        )
+        return prob_schizo, message
+
+    except Exception as e:
+        st.error(f"Prediction failed: {e}")
+        return 0.0, "Error"
+
 
 
 def predict_both(text):
