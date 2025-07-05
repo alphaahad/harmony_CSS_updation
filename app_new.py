@@ -47,7 +47,6 @@ html, body, .stApp {
     color: white !important;
     box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
 }
-
 #float-add {
     bottom: 110px;
 }
