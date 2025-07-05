@@ -1,128 +1,64 @@
 import streamlit as st
 from project_utils import *
 
-# ====== PAGE CONFIG ======
-st.set_page_config(page_title="HARMONY", layout="wide")
+# --- Page Config ---
+st.set_page_config(page_title="Harmony", layout="wide")
 
-# ====== FONT & CSS ======
-st.markdown("""
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
-<style>
-html, body, .stApp {
-    font-family: 'Quicksand', sans-serif;
-    background-color: #f7f7f9;
-    color: #222;
-}
-
-/* Logout button */
-.logout-button {
-    position: fixed;
-    top: 20px;
-    right: 25px;
-    z-index: 1000;
-    background-color: #e53935 !important;
-    color: white !important;
-    padding: 10px 20px !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    white-space: nowrap !important;
-    min-width: 90px !important;
-    text-align: center !important;
-}
-
-/* Floating buttons */
-.fab-button {
-    position: fixed;
-    right: 30px;
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    font-size: 24px;
-    z-index: 999;
-    border: none !important;
-    font-weight: bold;
-    background-color: #0059b3 !important;
-    color: white !important;
-    box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
-}
-#float-add {
-    bottom: 110px;
-}
-#float-chart {
-    bottom: 40px;
-}
-
-/* Note cards */
-.note-card {
-    border-radius: 12px;
-    padding: 15px;
-    height: 220px;
-    overflow: hidden;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.1);
-    transition: all 0.25s ease-in-out;
-}
-.note-card:hover {
-    transform: translateY(-2px);
-}
-.note-preview {
-    white-space: pre-wrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-height: 120px;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# ====== SESSION INIT ======
+# --- Session Initialization ---
 for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.items():
     if key not in st.session_state:
         st.session_state[key] = val
 
-# ====== LOGGED OUT VIEW ======
+# --- Login ---
 if "email" not in st.session_state:
     login_screen()
     st.stop()
 
-# ====== LOGOUT BUTTON ======
-st.markdown('<button class="logout-button" onclick="window.location.reload();">Logout</button>', unsafe_allow_html=True)
+# --- Logout Button ---
+if st.button("Logout"):
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
+    st.rerun()
 
-# ====== FLOATING BUTTONS ======
-st.markdown("""
-<button class="fab-button" id="float-add" onclick="parent.postMessage({type: 'streamlit:rerunScript', rerunScript: 'add'}, '*');">➕</button>
-<button class="fab-button" id="float-chart" onclick="parent.postMessage({type: 'streamlit:rerunScript', rerunScript: 'charts'}, '*');">📊</button>
-""", unsafe_allow_html=True)
+st.title("🧠 Project Harmony")
 
-# ====== HACK TO CATCH FLOATING BUTTONS ======
-float_trigger = st.experimental_get_query_params()
-if "rerunScript" in float_trigger:
-    if float_trigger["rerunScript"][0] == "add":
+# --- Floating Buttons ---
+col1, col2 = st.columns([1, 1])
+with col1:
+    if st.button("➕ New Note"):
         st.session_state.show_form = True
         st.session_state.view_note = None
         st.session_state.show_analysis = False
-    elif float_trigger["rerunScript"][0] == "charts":
+with col2:
+    if st.button("📊 View Charts"):
         st.session_state.show_form = False
         st.session_state.view_note = None
         st.session_state.show_analysis = True
 
-# ====== VIEW NOTE SECTION ======
+# --- View Note ---
 if st.session_state.view_note:
     df = get_notes_from_supabase()
     note_id = st.session_state.view_note
     result = df[df["id"] == int(note_id)]
+
     if not result.empty:
         note = result.iloc[0]
-        st.subheader(note["title"])
-        st.markdown(note["prediction_message"])
+        title = note["title"]
+        text = note["body"]
+        prediction = note["prediction_message"]
+
+        st.subheader(title)
+        st.markdown(prediction)
+
         with st.form("edit_note_form"):
-            new_title = st.text_input("Edit Title", value=note["title"])
-            new_text = st.text_area("Edit Note", value=note["body"], height=300)
-            col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
-            save = col1.form_submit_button("Save")
-            update = col2.form_submit_button("Update")
-            delete = col3.form_submit_button("Delete")
+            new_title = st.text_input("Edit Title", value=title)
+            new_text = st.text_area("Edit Note", value=text, height=300)
+            col1, col2, col3, col4 = st.columns(4)
+            save = col1.form_submit_button("Save Changes")
+            update = col2.form_submit_button("Update Prediction")
+            delete = col3.form_submit_button("Delete Note")
             back = col4.form_submit_button("Back")
+
         if save:
             p = predict_both(new_text)
             delete_note_from_supabase(int(note_id))
@@ -139,48 +75,59 @@ if st.session_state.view_note:
         elif back:
             st.session_state.view_note = None
             st.rerun()
+    else:
+        st.error("Note not found.")
+        st.session_state.view_note = None
 
-# ====== ANALYSIS SECTION ======
+# --- Analysis View ---
 elif st.session_state.show_analysis:
     df = get_notes_from_supabase()
     if df.empty:
-        st.info("No entries found.")
+        st.warning("No notes available.")
     else:
-        with st.form("analysis_form"):
-            st.subheader("Choose Analysis Type")
-            selected = st.selectbox("Select:", ["Depression", "Schizophrenia"])
-            col1, col2 = st.columns(2)
-            show = col1.form_submit_button("Show")
-            back = col2.form_submit_button("Back to Notes")
+        with st.form("choose_analysis"):
+            st.subheader("Choose analysis type:")
+            selected = st.selectbox("Select", ["Depression", "Schizophrenia"])
+            col1, col2 = st.columns([1, 1])
+            submit = col1.form_submit_button("Show")
+            back = col2.form_submit_button("Back")
+
         if back:
             st.session_state.show_analysis = False
             st.rerun()
-        if show:
+        if submit:
             if selected == "Depression":
                 show_analysis_depression()
             else:
                 show_analysis_schizo()
 
-# ====== ADD NOTE SECTION ======
+# --- New Note ---
 elif st.session_state.show_form:
-    with st.form("add_note_form"):
-        st.subheader("New Note")
+    with st.form("new_note"):
+        st.subheader("Add a New Note")
         title = st.text_input("Title")
         body = st.text_area("Body", height=200)
+
+        if "pending_prediction" not in st.session_state:
+            st.session_state.pending_prediction = None
+
+        if st.session_state.pending_prediction:
+            st.info(f"Prediction: {st.session_state.pending_prediction}")
+
         col1, col2, col3 = st.columns(3)
         pred = col1.form_submit_button("Get Prediction")
         save = col2.form_submit_button("Save")
         cancel = col3.form_submit_button("Cancel")
 
     if pred:
-        if not body.strip():
-            st.warning("Body is empty.")
+        if body.strip() == "":
+            st.warning("Note body is empty.")
         else:
             st.session_state.pending_prediction = predict_both(body)[2]
             st.rerun()
     elif save:
-        if not title.strip():
-            st.warning("Please provide a title.")
+        if title.strip() == "":
+            st.warning("Please enter a title.")
         else:
             p = predict_both(body)
             save_note_to_supabase(title, body, p[0], p[1], p[2])
@@ -192,27 +139,26 @@ elif st.session_state.show_form:
         st.session_state.show_form = False
         st.rerun()
 
-# ====== NOTES GRID SECTION ======
+# --- Notes Grid ---
 else:
     notes = get_notes_from_supabase()
     if notes.empty:
-        st.info("No notes yet.")
+        st.info("No notes saved yet!")
     else:
         st.subheader("Saved Notes")
-        num_cols = 5
+        num_cols = 3
         rows = [notes[i:i + num_cols] for i in range(0, len(notes), num_cols)]
-        colors = ["#e3d7ff", "#fff3c1", "#d9f5d9", "#ffd4d4", "#e0f7fa"]
+
         for row in rows:
             cols = st.columns(num_cols)
-            for idx, (i, note) in enumerate(row.iterrows()):
-                with cols[idx]:
-                    bg_color = colors[idx % len(colors)]
-                    st.markdown(f"""
-                    <div class="note-card" style="background-color:{bg_color};">
-                        <strong>{note['title']}</strong><br><br>
-                        <div class='note-preview'>{preview(note['body'])}</div>
-                    </div>
-                    """, unsafe_allow_html=True)
-                    if st.button("Open", key=f"open_btn_{note['id']}"):
+            for idx, (note_series, col) in enumerate(zip(row.iterrows(), cols)):
+                _, note = note_series
+                title = note["title"]
+                preview_text = preview(note["body"])
+
+                with col:
+                    st.markdown(f"#### {title}")
+                    st.markdown(preview_text)
+                    if st.button("Open", key=f"open_btn_{note['id']}_{idx}"):
                         st.session_state.view_note = note["id"]
                         st.rerun()
