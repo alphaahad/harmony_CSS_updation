@@ -99,22 +99,39 @@ if (logoutBtn) logoutBtn.classList.add("logout-button");
 </script>
 """, unsafe_allow_html=True)
 
-# --- Floating Buttons ---
-st.markdown("""
-<button id="fab-add" class="fab" onclick="window.parent.postMessage({type: 'add_note'}, '*')">➕</button>
-<button id="fab-chart" class="fab" onclick="window.parent.postMessage({type: 'view_chart'}, '*')">📊</button>
+# --- Floating Buttons (with working logic) ---
+st.markdown("<br><br>", unsafe_allow_html=True)
+fab1, spacer, fab2 = st.columns([0.07, 0.01, 0.07])
 
-<script>
-window.addEventListener("message", event => {
-    if (event.data.type === "add_note") {
-        window.parent.streamlitSend({type: "streamlit:setComponentValue", value: {"show_form": true}});
-    }
-    if (event.data.type === "view_chart") {
-        window.parent.streamlitSend({type: "streamlit:setComponentValue", value: {"show_analysis": true}});
-    }
-});
-</script>
+with fab1:
+    if st.button("➕", key="float_add"):
+        st.session_state.show_form = True
+        st.session_state.view_note = None
+        st.session_state.show_analysis = False
+
+with fab2:
+    if st.button("📊", key="float_chart"):
+        st.session_state.show_form = False
+        st.session_state.view_note = None
+        st.session_state.show_analysis = True
+
+# --- Floating Button Styles ---
+st.markdown("""
+<style>
+button[kind="secondary"] {
+    border-radius: 50% !important;
+    font-size: 22px !important;
+    width: 55px !important;
+    height: 55px !important;
+    padding: 0 !important;
+    margin-bottom: 15px !important;
+    background-color: #0059b3 !important;
+    color: white !important;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.2) !important;
+}
+</style>
 """, unsafe_allow_html=True)
+
 
 # --- State Handling ---
 if st.session_state.show_form:
