@@ -21,11 +21,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- Heading ---
-st.markdown("""
-    <h1 style='text-align: center; font-weight: 600; margin-top: 20px;'>PROJECT HARMONY</h1>
-""", unsafe_allow_html=True)
-
 # --- Session Init ---
 for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.items():
     if key not in st.session_state:
@@ -36,26 +31,34 @@ if "email" not in st.session_state:
     login_screen()
     st.stop()
 
-# --- Top Bar Buttons ---
-button_col1, button_col2, spacer, logout_col = st.columns([0.06, 0.06, 0.76, 0.12])
-
-with button_col1:
-    if st.button("➕", key="add_note", help="Add New Note"):
-        st.session_state.show_form = True
-        st.session_state.view_note = None
-        st.session_state.show_analysis = False
-
-with button_col2:
-    if st.button("📊", key="view_stats", help="View Statistics"):
-        st.session_state.show_form = False
-        st.session_state.view_note = None
-        st.session_state.show_analysis = True
-
-with logout_col:
-    if st.button("Logout"):
+# --- Sidebar Navigation ---
+with st.sidebar:
+    st.markdown("## 📚 Navigation")
+    nav_choice = st.radio("Select an option:", ["Saved Notes", "New Note", "Statistics"])
+    st.markdown("---")
+    if st.button("🚪 Logout"):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
         st.rerun()
+
+# --- Set View State from Sidebar ---
+if nav_choice == "New Note":
+    st.session_state.show_form = True
+    st.session_state.view_note = None
+    st.session_state.show_analysis = False
+elif nav_choice == "Statistics":
+    st.session_state.show_form = False
+    st.session_state.view_note = None
+    st.session_state.show_analysis = True
+elif nav_choice == "Saved Notes":
+    st.session_state.show_form = False
+    st.session_state.view_note = None
+    st.session_state.show_analysis = False
+
+# --- Heading ---
+st.markdown("""
+    <h1 style='text-align: center; font-weight: 600; margin-top: 20px;'>PROJECT HARMONY</h1>
+""", unsafe_allow_html=True)
 
 # --- View Note ---
 if st.session_state.view_note:
@@ -70,7 +73,6 @@ if st.session_state.view_note:
     new_body = st.text_area("Body", value=note["body"], height=250, key="edit_body")
 
     col1, col2, col3, col4 = st.columns(4)
-
     with col1:
         if st.button("Save"):
             if new_title.strip() and new_body.strip():
@@ -82,7 +84,6 @@ if st.session_state.view_note:
                 st.rerun()
             else:
                 st.warning("Title and body cannot be empty.")
-
     with col2:
         if st.button("Update Prediction"):
             if new_body.strip():
@@ -90,14 +91,12 @@ if st.session_state.view_note:
                 st.info(f"Updated Prediction: {new_msg}")
             else:
                 st.warning("Cannot update prediction on empty note.")
-
     with col3:
         if st.button("Delete Note"):
             delete_note_from_supabase(int(note_id))
             st.success("Note deleted.")
             st.session_state.view_note = None
             st.rerun()
-
     with col4:
         if st.button("Back"):
             st.session_state.view_note = None
@@ -105,6 +104,7 @@ if st.session_state.view_note:
 
 # --- View Analysis ---
 elif st.session_state.show_analysis:
+    st.subheader("📊 Statistics Dashboard")
     with st.form("choose_analysis"):
         option = st.selectbox("Which analysis?", ["Depression", "Schizophrenia"])
         submitted = st.form_submit_button("Show")
@@ -119,20 +119,18 @@ elif st.session_state.show_analysis:
 
 # --- Add New Note ---
 elif st.session_state.show_form:
-    st.subheader("New Journal Entry")
+    st.subheader("📝 New Journal Entry")
 
     title = st.text_input("Title")
     body = st.text_area("Write your journal entry here:", height=200)
 
     col1, col2, col3 = st.columns(3)
-
     with col1:
         if st.button("Update Prediction"):
             p = predict_both(body)
             st.session_state.prediction = p[0]
             st.session_state.prediction_message = p[1]
             st.success(p[2])
-
     with col2:
         if st.button("Save Note"):
             if title.strip() and body.strip():
@@ -149,7 +147,6 @@ elif st.session_state.show_form:
                 st.rerun()
             else:
                 st.warning("Title and body cannot be empty.")
-
     with col3:
         if st.button("Cancel"):
             st.session_state.show_form = False
@@ -160,7 +157,7 @@ elif st.session_state.show_form:
 
 # --- Notes Grid ---
 else:
-    st.subheader("Saved Notes")
+    st.subheader("📓 Saved Notes")
     df = get_notes_from_supabase()
 
     if df.empty:
