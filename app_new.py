@@ -4,10 +4,12 @@ from project_utils import *
 # --- Page Setup ---
 st.set_page_config(page_title="Harmony", layout="wide")
 
-# --- Centered Heading for All Pages ---
-header_col1, header_col2, header_col3 = st.columns([1, 3, 1])
-with header_col2:
-    st.markdown("## PROJECT HARMONY")
+# --- Centered Heading Using HTML ---
+st.markdown("""
+    <h2 style='text-align: center; font-weight: 600; margin-top: 20px;'>
+        🧠 Welcome to Project Harmony
+    </h2>
+""", unsafe_allow_html=True)
 
 # --- Logout Button (Top-Right, only after login) ---
 if "email" in st.session_state:
