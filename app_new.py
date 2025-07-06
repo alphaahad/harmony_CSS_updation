@@ -21,7 +21,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-
 # --- Session Init ---
 for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.items():
     if key not in st.session_state:
@@ -32,10 +31,12 @@ if "email" not in st.session_state:
     login_screen()
     st.stop()
 
-# --- Universal Heading (Always render at top) ---
-placeholder = st.empty()
-placeholder.markdown("""
-    <h1 style='text-align: center; font-weight: 600; margin-top: 20px;'>PROJECT HARMONY</h1>
+# --- Universal Heading ---
+st.markdown("""
+    <div style='text-align: center; margin-top: 10px;'>
+        <h1 style='font-weight: 600; margin-bottom: 0;'>PROJECT HARMONY</h1>
+        <hr style='width: 60%; margin-top: 5px;'>
+    </div>
 """, unsafe_allow_html=True)
 
 # --- Sidebar Navigation ---
