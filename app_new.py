@@ -69,7 +69,7 @@ if st.session_state.view_note:
     st.subheader(f"Editing: {note['title']}")
     st.write(note["prediction_message"])
 
-    new_title = st.text_input("Title (max50 characters)", value=note["title"][:50], max_chars=50, key="edit_title")
+    new_title = st.text_input("Title (max 50 characters)", value=note["title"][:50], max_chars=50, key="edit_title")
     new_body = st.text_area("Body", value=note["body"], height=250, key="edit_body")
 
     col1, col2, col3, col4 = st.columns(4)
@@ -125,7 +125,7 @@ elif st.session_state.show_analysis:
 elif st.session_state.show_form:
     st.subheader("📝 New Journal Entry")
 
-    title = st.text_input("Title (max 20 characters)", max_chars=20)
+    title = st.text_input("Title (max 50 characters)", max_chars=50)
     body = st.text_area("Write your journal entry here:", height=200)
 
     col1, col2, col3 = st.columns(3)
