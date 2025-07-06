@@ -101,6 +101,10 @@ if st.session_state.view_note:
     prediction_msg = note.get("prediction_message", "")
     if isinstance(prediction_msg, str) and prediction_msg.strip():
         st.info(prediction_msg)
+    elif isinstance(prediction_msg, (float, int)) and prediction_msg > 1:
+    # Only show if it's a valid-looking score, not junk like 0.0
+        st.info(str(prediction_msg))
+
 
     new_title = st.text_input("Title (max 100 characters)", value=note["title"][:100], max_chars=100, key="edit_title")
     new_body = st.text_area("Body", value=note["body"], height=250, key="edit_body")
