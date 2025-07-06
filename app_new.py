@@ -163,19 +163,14 @@ else:
     if df.empty:
         st.info("No notes found.")
     else:
-        # Try tighter columns layout
-        try:
-            cols = st.columns([1, 1, 1, 1], gap="small")  # Requires Streamlit 1.27+
-        except TypeError:
-            cols = st.columns([1, 1, 1, 1])  # Fallback for older versions
-
+        cols = st.columns(4)
         for idx, (_, note) in enumerate(df.iterrows()):
             with cols[idx % 4]:
                 with st.container():
                     st.markdown("#### " + note["title"])
                     st.text_area(
                         label="Preview",
-                        value=preview(note["body"])[:200] + "...",
+                        value=preview(note["body"]),
                         height=180,
                         disabled=True,
                         label_visibility="collapsed",
