@@ -119,7 +119,7 @@ elif st.session_state.show_analysis:
 
 # --- Add New Note ---
 elif st.session_state.show_form:
-    st.subheader("📝 New Journal Entry")
+    st.subheader("New Journal Entry")
 
     title = st.text_input("Title")
     body = st.text_area("Write your journal entry here:", height=200)
@@ -127,14 +127,14 @@ elif st.session_state.show_form:
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        if st.button("🔍 Update Prediction"):
+        if st.button("Update Prediction"):
             p = predict_both(body)
             st.session_state.prediction = p[0]
             st.session_state.prediction_message = p[1]
             st.success(f"{p[1]} (Confidence: {round(p[2]*100, 2)}%)")
 
     with col2:
-        if st.button("💾 Save Note"):
+        if st.button("Save Note"):
             if title.strip() and body.strip():
                 p = predict_both(body) if "prediction" not in st.session_state else (
                     st.session_state.prediction,
@@ -151,7 +151,7 @@ elif st.session_state.show_form:
                 st.warning("Title and body cannot be empty.")
 
     with col3:
-        if st.button("🔙 Cancel"):
+        if st.button("Cancel"):
             st.session_state.show_form = False
             st.session_state.view_note = None
             st.session_state.prediction = None
