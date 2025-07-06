@@ -31,15 +31,18 @@ if "email" not in st.session_state:
     st.stop()
 
 # --- Floating Buttons ---
-if st.button("➕", key="float-add", help="Add New Note"):
-    st.session_state.show_form = True
-    st.session_state.view_note = None
-    st.session_state.show_analysis = False
+# --- Floating Buttons: Bottom Right Vertical Stack ---
+bottom_right_col1, bottom_right_col2, _ = st.columns([0.85, 0.1, 0.05])
+with bottom_right_col2:
+    if st.button("➕", key="float_add", help="Add New Note"):
+        st.session_state.show_form = True
+        st.session_state.view_note = None
+        st.session_state.show_analysis = False
+    if st.button("📊", key="float_stats", help="View Stats"):
+        st.session_state.show_form = False
+        st.session_state.view_note = None
+        st.session_state.show_analysis = True
 
-if st.button("📊", key="float-chart", help="View Stats"):
-    st.session_state.show_form = False
-    st.session_state.view_note = None
-    st.session_state.show_analysis = True
 
 # --- View Specific Note ---
 if st.session_state.view_note:
