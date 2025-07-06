@@ -24,6 +24,28 @@ st.markdown("""
         text-align: center;
         font-weight: 600;
     }
+    .nav-button {
+        display: block;
+        width: 100%;
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        background-color: #f0f2f6;
+        border: none;
+        border-radius: 8px;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .nav-button:hover {
+        background-color: #dbe4f0;
+    }
+    .nav-button-active {
+        background-color: #4c83ff;
+        color: white;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -49,11 +71,21 @@ if "email" not in st.session_state:
 # --- Sidebar Navigation ---
 with st.sidebar:
     st.markdown("## Navigation")
-    st.session_state.nav_choice = st.radio(
-        "Select an option:",
-        ["Saved Notes", "New Note", "Statistics"],
-        index=["Saved Notes", "New Note", "Statistics"].index(st.session_state.nav_choice)
-    )
+
+    def nav_button(label):
+        is_active = st.session_state.nav_choice == label
+        btn_key = f"nav_{label}"
+        if st.button(label, key=btn_key):
+            st.session_state.nav_choice = label
+        st.markdown(
+            f"<div class='{'nav-button nav-button-active' if is_active else 'nav-button'}'>{label}</div>",
+            unsafe_allow_html=True
+        )
+
+    nav_button("Saved Notes")
+    nav_button("New Note")
+    nav_button("Statistics")
+
     st.markdown("---")
     if st.button("Logout"):
         for key in list(st.session_state.keys()):
@@ -137,7 +169,6 @@ elif st.session_state.show_analysis:
 
     st.stop()
 
-
 #--- add new note---
 elif st.session_state.show_form:
     st.subheader("New Journal Entry")
@@ -175,7 +206,6 @@ elif st.session_state.show_form:
                 st.warning("Title and body cannot be empty.")
 
     st.stop()
-
 
 # --- Notes Grid ---
 st.subheader("Saved Notes")
