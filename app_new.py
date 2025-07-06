@@ -66,21 +66,13 @@ if st.session_state.view_note:
     st.subheader(f"Editing: {note['title']}")
     st.write(note["prediction_message"])
 
-    with st.form("edit_note_form"):
-        new_title = st.text_input("Title", value=note["title"])
-        new_body = st.text_area("Body", value=note["body"], height=250)
+    new_title = st.text_input("Title", value=note["title"], key="edit_title")
+    new_body = st.text_area("Body", value=note["body"], height=250, key="edit_body")
 
-        col1, col2, col3, col4, _ = st.columns([1, 1, 1, 1, 0.1])  # 4 equal + spacer
-        with col1:
-            save_btn = st.form_submit_button("💾 Save")
-        with col2:
-            update_btn = st.form_submit_button("🔁 Update Prediction")
-        with col3:
-            delete_btn = st.form_submit_button("🗑️ Delete Note")
-        with col4:
-            back_btn = st.form_submit_button("🔙 Back")
+    col1, col2, col3, col4 = st.columns(4)
 
-        if save_btn:
+    with col1:
+        if st.button("💾 Save"):
             if new_title.strip() and new_body.strip():
                 p = predict_both(new_body)
                 delete_note_from_supabase(int(note_id))
@@ -91,20 +83,23 @@ if st.session_state.view_note:
             else:
                 st.warning("Title and body cannot be empty.")
 
-        elif update_btn:
+    with col2:
+        if st.button("🔁 Update Prediction"):
             if new_body.strip():
                 _, _, new_msg = predict_both(new_body)
                 st.info(f"Updated Prediction: {new_msg}")
             else:
                 st.warning("Cannot update prediction on empty note.")
 
-        elif delete_btn:
+    with col3:
+        if st.button("🗑️ Delete Note"):
             delete_note_from_supabase(int(note_id))
             st.success("Note deleted.")
             st.session_state.view_note = None
             st.rerun()
 
-        elif back_btn:
+    with col4:
+        if st.button("🔙 Back"):
             st.session_state.view_note = None
             st.rerun()
 
