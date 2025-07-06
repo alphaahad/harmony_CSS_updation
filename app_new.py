@@ -66,11 +66,34 @@ if st.session_state.view_note:
         new_title = st.text_input("Title", value=note["title"])
         new_body = st.text_area("Body", value=note["body"], height=250)
 
-        col1, col2, col3, col4 = st.columns([1,1,1,1])
-        save_btn = col1.form_submit_button("Save")
-        update_btn = col2.form_submit_button("Update Prediction")
-        delete_btn = col3.form_submit_button("Delete Note")
-        back_btn = col4.form_submit_button("Back")
+        st.markdown("""
+<style>
+.button-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 20px;
+}
+.button-row button {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# Inside your form block
+with st.form("edit_note_form"):
+    new_title = st.text_input("Title", value=note["title"])
+    new_body = st.text_area("Body", value=note["body"], height=250)
+
+    col = st.columns(1)[0]
+    with col:
+        save_btn = st.form_submit_button("💾 Save", use_container_width=True)
+        update_btn = st.form_submit_button("🔁 Update Prediction", use_container_width=True)
+        delete_btn = st.form_submit_button("🗑️ Delete Note", use_container_width=True)
+        back_btn = st.form_submit_button("🔙 Back", use_container_width=True)
 
     if save_btn:
         if new_title.strip() and new_body.strip():
