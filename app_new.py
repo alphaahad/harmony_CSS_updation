@@ -66,11 +66,11 @@ if st.session_state.view_note:
         new_title = st.text_input("Title", value=note["title"])
         new_body = st.text_area("Body", value=note["body"], height=250)
 
-        col1, col2, col3, col4 = st.columns(4)
-        save_btn = col1.form_submit_button("💾 Save")
-        update_btn = col2.form_submit_button("🔁 Update Prediction")
-        delete_btn = col3.form_submit_button("🗑️ Delete Note")
-        back_btn = col4.form_submit_button("🔙 Back")
+        col1, col2, col3, col4 = st.columns([1,1,1,1])
+        save_btn = col1.form_submit_button("Save")
+        update_btn = col2.form_submit_button("Update Prediction")
+        delete_btn = col3.form_submit_button("Delete Note")
+        back_btn = col4.form_submit_button("Back")
 
     if save_btn:
         if new_title.strip() and new_body.strip():
