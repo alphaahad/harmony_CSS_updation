@@ -32,8 +32,9 @@ if "email" not in st.session_state:
     login_screen()
     st.stop()
 
-# --- Heading (Always visible) ---
-st.markdown("""
+# --- Universal Heading (Always render at top) ---
+placeholder = st.empty()
+placeholder.markdown("""
     <h1 style='text-align: center; font-weight: 600; margin-top: 20px;'>PROJECT HARMONY</h1>
 """, unsafe_allow_html=True)
 
