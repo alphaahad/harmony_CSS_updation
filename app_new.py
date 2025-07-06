@@ -7,7 +7,7 @@ st.set_page_config(page_title="Harmony", layout="wide")
 # --- Centered Heading for All Pages ---
 header_col1, header_col2, header_col3 = st.columns([1, 3, 1])
 with header_col2:
-    st.markdown("## 🧠 Welcome to Project Harmony")
+    st.markdown("##                    PROJECT HARMONY")
 
 # --- Logout Button (Top-Right, only after login) ---
 if "email" in st.session_state:
