@@ -74,7 +74,7 @@ if st.session_state.view_note:
     </style>
     """, unsafe_allow_html=True)
 
-    with st.form("edit_note_form"):
+with st.form("edit_note_form"):
     new_title = st.text_input("Title", value=note["title"])
     new_body = st.text_area("Body", value=note["body"], height=250)
 
@@ -100,6 +100,7 @@ if st.session_state.view_note:
         delete_btn = st.form_submit_button("🗑️ Delete Note")
     with col4:
         back_btn = st.form_submit_button("🔙 Back")
+
 
 
     if save_btn:
