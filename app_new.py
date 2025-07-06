@@ -62,38 +62,32 @@ if st.session_state.view_note:
     st.subheader(f"Editing: {note['title']}")
     st.write(note["prediction_message"])
 
+    # Inject custom CSS for button spacing
+    st.markdown("""
+    <style>
+    .stButton>button {
+        height: 48px;
+        font-size: 16px;
+        border-radius: 8px;
+        width: 100%;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     with st.form("edit_note_form"):
         new_title = st.text_input("Title", value=note["title"])
         new_body = st.text_area("Body", value=note["body"], height=250)
 
-        st.markdown("""
-<style>
-.button-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    margin-top: 20px;
-}
-.button-row button {
-    flex: 1;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 8px;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# Inside your form block
-with st.form("edit_note_form"):
-    new_title = st.text_input("Title", value=note["title"])
-    new_body = st.text_area("Body", value=note["body"], height=250)
-
-    col = st.columns(1)[0]
-    with col:
-        save_btn = st.form_submit_button("💾 Save", use_container_width=True)
-        update_btn = st.form_submit_button("🔁 Update Prediction", use_container_width=True)
-        delete_btn = st.form_submit_button("🗑️ Delete Note", use_container_width=True)
-        back_btn = st.form_submit_button("🔙 Back", use_container_width=True)
+        # Arrange buttons in a single row
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            save_btn = st.form_submit_button("💾 Save")
+        with col2:
+            update_btn = st.form_submit_button("🔁 Update Prediction")
+        with col3:
+            delete_btn = st.form_submit_button("🗑️ Delete Note")
+        with col4:
+            back_btn = st.form_submit_button("🔙 Back")
 
     if save_btn:
         if new_title.strip() and new_body.strip():
