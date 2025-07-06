@@ -4,6 +4,16 @@ from project_utils import *
 # --- Page Setup ---
 st.set_page_config(page_title="Harmony", layout="wide")
 
+st.markdown("""
+    <style>
+    button[kind="secondary"] {
+        font-size: 20px !important;
+        padding: 12px 18px !important;
+        border-radius: 10px !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # --- Centered Heading Using HTML ---
 st.markdown("""
     <h1 style='text-align: center; font-weight: 600; margin-top: 20px;'>
@@ -30,31 +40,17 @@ if "email" not in st.session_state:
     login_screen()
     st.stop()
 
-# --- Top-Left Horizontal Action Buttons (Larger Size) ---
-action_col1, action_col2, spacer = st.columns([0.06, 0.06, 0.88])
+# --- Top-Left Action Buttons (side by side, enlarged) ---
+button_col1, button_col2, _ = st.columns([0.06, 0.06, 0.88])
 
-with action_col1:
-    st.markdown(
-        """
-        <button style='font-size:20px; padding:10px 16px; border:none; border-radius:8px; background-color:#4F8BF9; color:white; cursor:pointer;'
-        onclick="document.querySelector('button[data-testid=\\'stButton\\']:nth-of-type(1)').click()">➕</button>
-        """,
-        unsafe_allow_html=True
-    )
-    if st.button(" ", key="add_note_button_hidden"):
+with button_col1:
+    if st.button("➕", key="add_note", help="Add New Note"):
         st.session_state.show_form = True
         st.session_state.view_note = None
         st.session_state.show_analysis = False
 
-with action_col2:
-    st.markdown(
-        """
-        <button style='font-size:20px; padding:10px 16px; border:none; border-radius:8px; background-color:#4F8BF9; color:white; cursor:pointer;'
-        onclick="document.querySelector('button[data-testid=\\'stButton\\']:nth-of-type(2)').click()">📊</button>
-        """,
-        unsafe_allow_html=True
-    )
-    if st.button(" ", key="stats_button_hidden"):
+with button_col2:
+    if st.button("📊", key="view_stats", help="View Statistics"):
         st.session_state.show_form = False
         st.session_state.view_note = None
         st.session_state.show_analysis = True
