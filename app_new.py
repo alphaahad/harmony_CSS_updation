@@ -174,21 +174,23 @@ elif st.session_state.show_form:
 else:
     st.subheader("Saved Notes")
     df = get_notes_from_supabase()
+
     if df.empty:
         st.info("No notes found.")
     else:
         cols = st.columns(3)
         for idx, (_, note) in enumerate(df.iterrows()):
             with cols[idx % 3]:
-                st.markdown("#### " + note["title"])
-                st.text_area(
-                    "Preview",
-                    value=preview(note["body"]),
-                    height=140,
-                    disabled=True,
-                    label_visibility="collapsed",
-                    key=f"note_preview_{note['id']}"
-                )
-                if st.button("Open", key=f"open_note_{note['id']}"):
-                    st.session_state.view_note = note["id"]
-                    st.rerun()
+                with st.container():
+                    st.markdown("#### " + note["title"])
+                    st.text_area(
+                        label="Preview",
+                        value=preview(note["body"]),
+                        height=180,
+                        disabled=True,
+                        label_visibility="collapsed",
+                        key=f"note_preview_{note['id']}"
+                    )
+                    if st.button("Open", key=f"open_note_{note['id']}"):
+                        st.session_state.view_note = note["id"]
+                        st.rerun()
