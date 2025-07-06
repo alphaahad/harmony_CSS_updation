@@ -7,7 +7,7 @@ st.set_page_config(page_title="Harmony", layout="wide")
 # --- Centered Heading Using HTML ---
 st.markdown("""
     <h1 style='text-align: center; font-weight: 600; margin-top: 20px;'>
-                     Project Harmony
+                     PROJECT HARMONY
     </h1>
 """, unsafe_allow_html=True)
 
