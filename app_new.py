@@ -164,12 +164,13 @@ elif st.session_state.show_form:
             else:
                 st.warning("Title and body cannot be empty.")
     with col3:
-        if st.button("Cancel"):
-            st.session_state.show_form = False
-            st.session_state.view_note = None
-            st.session_state.prediction = None
-            st.session_state.prediction_message = None
-            st.rerun()
+         if st.button("Cancel"):
+             st.session_state["show_form"] = False
+             st.session_state["view_note"] = None
+             st.session_state["prediction"] = None
+             st.session_state["prediction_message"] = None
+             st.experimental_rerun()
+
 
     st.stop()
 
