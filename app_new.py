@@ -152,7 +152,7 @@ elif st.session_state.show_form:
                     st.session_state.prediction_message,
                     0.0
                 )
-                save_note_to_supabase(title, body, p[0], p[1], mood, help_status)
+                save_note_to_supabase(title, body, p[0], p[1])
                 st.session_state.show_form = False
                 st.session_state.prediction = None
                 st.session_state.prediction_message = None
