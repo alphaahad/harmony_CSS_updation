@@ -122,7 +122,7 @@ if st.session_state.view_note:
 
     st.stop()
 
-# --- View Analysis ---
+#---view analysis---
 elif st.session_state.show_analysis:
     st.subheader("Statistics Dashboard")
     with st.form("choose_analysis"):
@@ -135,21 +135,17 @@ elif st.session_state.show_analysis:
         else:
             show_analysis_schizo()
 
-    if st.button("Back to Notes"):
-        st.session_state.show_analysis = False
-        st.session_state.nav_choice = "Saved Notes"
-        st.rerun()
-
     st.stop()
 
-# --- Add New Note ---
+
+#--- add new note---
 elif st.session_state.show_form:
     st.subheader("New Journal Entry")
 
     title = st.text_input("Title (max 100 characters)", max_chars=100)
     body = st.text_area("Write your journal entry here:", height=200)
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns(2)
     with col1:
         if st.button("Update Prediction"):
             p = predict_both(body)
@@ -177,16 +173,9 @@ elif st.session_state.show_form:
                 st.rerun()
             else:
                 st.warning("Title and body cannot be empty.")
-    with col3:
-        if st.button("Cancel"):
-            st.session_state.show_form = False
-            st.session_state.view_note = None
-            st.session_state.prediction = None
-            st.session_state.prediction_message = None
-            st.session_state.nav_choice = "Saved Notes"
-            st.rerun()
 
     st.stop()
+
 
 # --- Notes Grid ---
 st.subheader("Saved Notes")
