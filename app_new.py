@@ -6,9 +6,9 @@ st.set_page_config(page_title="Harmony", layout="wide")
 
 # --- Centered Heading Using HTML ---
 st.markdown("""
-    <h2 style='text-align: center; font-weight: 600; margin-top: 20px;'>
+    <h1 style='text-align: center; font-weight: 600; margin-top: 20px;'>
                      Project Harmony
-    </h2>
+    </h1>
 """, unsafe_allow_html=True)
 
 # --- Logout Button (Top-Right, only after login) ---
