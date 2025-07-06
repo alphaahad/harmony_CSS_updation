@@ -21,6 +21,11 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# --- Heading ---
+st.markdown("""
+    <h1 style='text-align: center; font-weight: 600; margin-top: 20px;'>PROJECT HARMONY</h1>
+""", unsafe_allow_html=True)
+
 # --- Session Init ---
 for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.items():
     if key not in st.session_state:
