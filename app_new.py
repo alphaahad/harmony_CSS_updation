@@ -32,6 +32,11 @@ if "email" not in st.session_state:
     login_screen()
     st.stop()
 
+# --- Heading (Always visible) ---
+st.markdown("""
+    <h1 style='text-align: center; font-weight: 600; margin-top: 20px;'>PROJECT HARMONY</h1>
+""", unsafe_allow_html=True)
+
 # --- Sidebar Navigation ---
 with st.sidebar:
     st.markdown("## Navigation")
