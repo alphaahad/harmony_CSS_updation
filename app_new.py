@@ -50,10 +50,10 @@ elif nav_choice == "Statistics":
     st.session_state.show_form = False
     st.session_state.view_note = None
     st.session_state.show_analysis = True
-elif nav_choice == "Saved Notes":
-    st.session_state.show_form = False
-    st.session_state.view_note = None
-    st.session_state.show_analysis = False
+else:
+    if st.session_state.view_note is None:
+        st.session_state.show_form = False
+        st.session_state.show_analysis = False
 
 # --- Heading ---
 st.markdown("""
@@ -69,7 +69,7 @@ if st.session_state.view_note:
     st.subheader(f"Editing: {note['title']}")
     st.write(note["prediction_message"])
 
-    new_title = st.text_input("Title", value=note["title"], key="edit_title")
+    new_title = st.text_input("Title (max 20 characters)", value=note["title"][:20], max_chars=20, key="edit_title")
     new_body = st.text_area("Body", value=note["body"], height=250, key="edit_body")
 
     col1, col2, col3, col4 = st.columns(4)
@@ -102,6 +102,8 @@ if st.session_state.view_note:
             st.session_state.view_note = None
             st.rerun()
 
+    st.stop()
+
 # --- View Analysis ---
 elif st.session_state.show_analysis:
     st.subheader("📊 Statistics Dashboard")
@@ -117,11 +119,13 @@ elif st.session_state.show_analysis:
         st.session_state.show_analysis = False
         st.rerun()
 
+    st.stop()
+
 # --- Add New Note ---
 elif st.session_state.show_form:
     st.subheader("📝 New Journal Entry")
 
-    title = st.text_input("Title")
+    title = st.text_input("Title (max 20 characters)", max_chars=20)
     body = st.text_area("Write your journal entry here:", height=200)
 
     col1, col2, col3 = st.columns(3)
@@ -130,7 +134,7 @@ elif st.session_state.show_form:
             p = predict_both(body)
             st.session_state.prediction = p[0]
             st.session_state.prediction_message = p[1]
-            st.success(p[2])
+            st.success(f"{p[1]} (Confidence: {round(p[2]*100, 2)}%)")
     with col2:
         if st.button("Save Note"):
             if title.strip() and body.strip():
@@ -155,27 +159,29 @@ elif st.session_state.show_form:
             st.session_state.prediction_message = None
             st.rerun()
 
-# --- Notes Grid ---
-else:
-    st.subheader("📓 Saved Notes")
-    df = get_notes_from_supabase()
+    st.stop()
 
-    if df.empty:
-        st.info("No notes found.")
-    else:
-        cols = st.columns(4)
-        for idx, (_, note) in enumerate(df.iterrows()):
-            with cols[idx % 4]:
-                with st.container():
-                    st.markdown("#### " + note["title"])
-                    st.text_area(
-                        label="Preview",
-                        value=preview(note["body"]),
-                        height=180,
-                        disabled=True,
-                        label_visibility="collapsed",
-                        key=f"note_preview_{note['id']}"
-                    )
-                    if st.button("Open", key=f"open_note_{note['id']}"):
-                        st.session_state.view_note = note["id"]
-                        st.rerun()
+# --- Notes Grid ---
+st.subheader("📓 Saved Notes")
+df = get_notes_from_supabase()
+
+if df.empty:
+    st.info("No notes found.")
+else:
+    cols = st.columns(4)
+    for idx, (_, note) in enumerate(df.iterrows()):
+        with cols[idx % 4]:
+            with st.container():
+                title_short = note["title"][:20] + ("..." if len(note["title"]) > 20 else "")
+                st.markdown("#### " + title_short)
+                st.text_area(
+                    label="Preview",
+                    value=preview(note["body"]),
+                    height=180,
+                    disabled=True,
+                    label_visibility="collapsed",
+                    key=f"note_preview_{note['id']}"
+                )
+                if st.button("Open", key=f"open_note_{note['id']}"):
+                    st.session_state.view_note = note["id"]
+                    st.experimental_rerun()
