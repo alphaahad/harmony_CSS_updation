@@ -4,7 +4,7 @@ from project_utils import *
 # --- Page Setup ---
 st.set_page_config(page_title="Harmony", layout="wide")
 
-# --- Enlarge Buttons ---
+# --- CSS Styling ---
 st.markdown("""
     <style>
     button[kind="secondary"] {
@@ -67,50 +67,46 @@ if st.session_state.view_note:
     st.write(note["prediction_message"])
 
     with st.form("edit_note_form"):
-    new_title = st.text_input("Title", value=note["title"])
-    new_body = st.text_area("Body", value=note["body"], height=250)
+        new_title = st.text_input("Title", value=note["title"])
+        new_body = st.text_area("Body", value=note["body"], height=250)
 
-    # Use 4 equal-width columns with padding between them
-    col1, col2, col3, col4, _ = st.columns([1, 1, 1, 1, 0.1])  # final empty col prevents overflow
+        col1, col2, col3, col4, _ = st.columns([1, 1, 1, 1, 0.1])  # 4 equal + spacer
+        with col1:
+            save_btn = st.form_submit_button("💾 Save")
+        with col2:
+            update_btn = st.form_submit_button("🔁 Update Prediction")
+        with col3:
+            delete_btn = st.form_submit_button("🗑️ Delete Note")
+        with col4:
+            back_btn = st.form_submit_button("🔙 Back")
 
-    with col1:
-        save_btn = st.form_submit_button("💾 Save")
-    with col2:
-        update_btn = st.form_submit_button("🔁 Update Prediction")
-    with col3:
-        delete_btn = st.form_submit_button("🗑️ Delete Note")
-    with col4:
-        back_btn = st.form_submit_button("🔙 Back")
+        if save_btn:
+            if new_title.strip() and new_body.strip():
+                p = predict_both(new_body)
+                delete_note_from_supabase(int(note_id))
+                save_note_to_supabase(new_title, new_body, p[0], p[1], p[2])
+                st.success("Note updated successfully.")
+                st.session_state.view_note = None
+                st.rerun()
+            else:
+                st.warning("Title and body cannot be empty.")
 
-    if save_btn:
-        if new_title.strip() and new_body.strip():
-            p = predict_both(new_body)
+        elif update_btn:
+            if new_body.strip():
+                _, _, new_msg = predict_both(new_body)
+                st.info(f"Updated Prediction: {new_msg}")
+            else:
+                st.warning("Cannot update prediction on empty note.")
+
+        elif delete_btn:
             delete_note_from_supabase(int(note_id))
-            save_note_to_supabase(new_title, new_body, p[0], p[1], p[2])
-            st.success("Note updated successfully.")
+            st.success("Note deleted.")
             st.session_state.view_note = None
             st.rerun()
-        else:
-            st.warning("Title and body cannot be empty.")
 
-    elif update_btn:
-        if new_body.strip():
-            _, _, new_msg = predict_both(new_body)
-            st.info(f"Updated Prediction: {new_msg}")
-        else:
-            st.warning("Cannot update prediction on empty note.")
-
-    elif delete_btn:
-        delete_note_from_supabase(int(note_id))
-        st.success("Note deleted.")
-        st.session_state.view_note = None
-        st.rerun()
-
-    elif back_btn:
-        st.session_state.view_note = None
-        st.rerun()
-
-
+        elif back_btn:
+            st.session_state.view_note = None
+            st.rerun()
 
 # --- View Analysis ---
 elif st.session_state.show_analysis:
