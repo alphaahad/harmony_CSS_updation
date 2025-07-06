@@ -30,27 +30,20 @@ if "email" not in st.session_state:
     login_screen()
     st.stop()
 
-# --- Simulate Bottom Right by Spacer + Column ---
-st.write("")  # Optional minor spacing
+# --- Top-Left Horizontal Action Buttons ---
+action_col1, action_col2, spacer = st.columns([0.06, 0.06, 0.88])
 
-# Add lots of empty space to push buttons downward
-for _ in range(25):  
-    st.write("")
-
-# Create empty space on the left and button stack on the right
-_, button_col = st.columns([0.85, 0.15])  # Adjust ratio if needed
-
-with button_col:
-    if st.button("➕", key="float_add", help="Add New Note"):
+with action_col1:
+    if st.button("➕", help="Add New Note"):
         st.session_state.show_form = True
         st.session_state.view_note = None
         st.session_state.show_analysis = False
 
-    if st.button("📊", key="float_chart", help="View Stats"):
+with action_col2:
+    if st.button("📊", help="View Stats"):
         st.session_state.show_form = False
         st.session_state.view_note = None
         st.session_state.show_analysis = True
-
 
 # --- View Specific Note ---
 if st.session_state.view_note:
