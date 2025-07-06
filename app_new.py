@@ -129,7 +129,7 @@ elif st.session_state.show_analysis:
         st.session_state.show_analysis = False
         st.rerun()
 
-st.stop()
+    st.stop()
 
 # --- Add New Note ---
 elif st.session_state.show_form:
