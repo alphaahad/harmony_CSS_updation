@@ -4,19 +4,38 @@ from project_utils import *
 # --- Page Setup ---
 st.set_page_config(page_title="Harmony", layout="wide")
 
-# --- CSS Styling ---
+# --- Combined CSS Styling ---
 st.markdown("""
     <style>
+    /* Style for all secondary buttons */
     button[kind="secondary"] {
         font-size: 20px !important;
         padding: 12px 20px !important;
         border-radius: 10px !important;
     }
+
+    /* Consistent button layout */
     .stButton>button {
         height: 48px;
         font-size: 16px;
         border-radius: 8px;
         width: 100%;
+    }
+
+    /* Force note cards to stay aligned even with sidebar */
+    .block-container {
+        padding-top: 1rem;
+        padding-bottom: 2rem;
+    }
+
+    .element-container:has(textarea[disabled]) {
+        min-width: 230px !important;
+        max-width: 230px !important;
+    }
+
+    .stTextArea textarea {
+        font-size: 15px !important;
+        line-height: 1.4 !important;
     }
     </style>
 """, unsafe_allow_html=True)
