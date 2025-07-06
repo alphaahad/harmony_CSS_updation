@@ -81,18 +81,59 @@ elif st.session_state.show_analysis:
 
 # --- Add New Note ---
 elif st.session_state.show_form:
-    with st.form("new_note_form"):
-        title = st.text_input("Title")
-        body = st.text_area("Body", height=200)
-        submitted = st.form_submit_button("Save")
-    if submitted:
-        if title.strip() and body.strip():
+    st.subheader("📝 New Journal Entry" if st.session_state.view_note is None else "✏️ Edit Journal Entry")
+
+    # Pre-fill values if editing
+    default_title = ""
+    default_body = ""
+    default_mood = "😐 Neutral"
+    default_help = "No"
+
+    if st.session_state.view_note:
+        df = get_notes_from_supabase()
+        note_id = st.session_state.view_note
+        note = df[df["id"] == int(note_id)].iloc[0]
+        default_title = note["title"]
+        default_body = note["body"]
+
+    title = st.text_input("Title", value=default_title)
+    body = st.text_area("Write your journal entry here:", height=200, value=default_body)
+
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        if st.button("🔍 Update Prediction"):
             p = predict_both(body)
-            save_note_to_supabase(title, body, p[0], p[1], p[2])
+            st.session_state.prediction = p[0]
+            st.session_state.prediction_message = p[1]
+            st.success(f"{p[1]} (Confidence: {round(p[2]*100, 2)}%)")
+
+    with col2:
+        if st.button("💾 Save Note"):
+            if title.strip() and body.strip():
+                p = predict_both(body) if "prediction" not in st.session_state else (
+                    st.session_state.prediction,
+                    st.session_state.prediction_message,
+                    0.0
+                )
+                save_note_to_supabase(title, body, p[0], p[1], mood, help_status)
+                st.session_state.show_form = False
+                st.session_state.prediction = None
+                st.session_state.prediction_message = None
+                st.session_state.view_note = None
+                st.rerun()
+            else:
+                st.warning("Title and body cannot be empty.")
+
+    with col3:
+        if st.button("🔙 Cancel"):
             st.session_state.show_form = False
+            st.session_state.view_note = None
+            st.session_state.prediction = None
+            st.session_state.prediction_message = None
             st.rerun()
-        else:
-            st.warning("Title and body cannot be empty.")
+
 
 # --- Show Notes Grid ---
 else:
