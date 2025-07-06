@@ -182,9 +182,9 @@ else:
     if df.empty:
         st.info("No notes found.")
     else:
-        cols = st.columns(3)
+        cols = st.columns(4)
         for idx, (_, note) in enumerate(df.iterrows()):
-            with cols[idx % 3]:
+            with cols[idx % 4]:
                 with st.container():
                     st.markdown("#### " + note["title"])
                     st.text_area(
