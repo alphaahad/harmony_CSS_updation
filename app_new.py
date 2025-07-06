@@ -129,6 +129,8 @@ elif st.session_state.show_analysis:
         st.session_state.show_analysis = False
         st.rerun()
 
+st.stop()
+
 # --- Add New Note ---
 elif st.session_state.show_form:
     st.subheader("New Journal Entry")
