@@ -31,7 +31,13 @@ st.markdown("""
 st.markdown("<h1>PROJECT HARMONY</h1>", unsafe_allow_html=True)
 
 # --- Session Init ---
-for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.items():
+defaults = {
+    "view_note": None,
+    "show_form": False,
+    "show_analysis": False,
+    "nav_choice": "Saved Notes"
+}
+for key, val in defaults.items():
     if key not in st.session_state:
         st.session_state[key] = val
 
@@ -43,23 +49,27 @@ if "email" not in st.session_state:
 # --- Sidebar Navigation ---
 with st.sidebar:
     st.markdown("## Navigation")
-    nav_choice = st.radio("Select an option:", ["Saved Notes", "New Note", "Statistics"])
+    st.session_state.nav_choice = st.radio(
+        "Select an option:",
+        ["Saved Notes", "New Note", "Statistics"],
+        index=["Saved Notes", "New Note", "Statistics"].index(st.session_state.nav_choice)
+    )
     st.markdown("---")
     if st.button("Logout"):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
         st.rerun()
 
-# --- Set View State from Sidebar ---
-if nav_choice == "New Note":
+# --- Set View State from nav_choice ---
+if st.session_state.nav_choice == "New Note":
     st.session_state.show_form = True
     st.session_state.view_note = None
     st.session_state.show_analysis = False
-elif nav_choice == "Statistics":
+elif st.session_state.nav_choice == "Statistics":
     st.session_state.show_form = False
     st.session_state.view_note = None
     st.session_state.show_analysis = True
-else:
+else:  # Saved Notes
     if st.session_state.view_note is None:
         st.session_state.show_form = False
         st.session_state.show_analysis = False
@@ -127,6 +137,7 @@ elif st.session_state.show_analysis:
 
     if st.button("Back to Notes"):
         st.session_state.show_analysis = False
+        st.session_state.nav_choice = "Saved Notes"
         st.rerun()
 
     st.stop()
@@ -162,17 +173,18 @@ elif st.session_state.show_form:
                 st.session_state.prediction = None
                 st.session_state.prediction_message = None
                 st.session_state.view_note = None
+                st.session_state.nav_choice = "Saved Notes"
                 st.rerun()
             else:
                 st.warning("Title and body cannot be empty.")
     with col3:
-         if st.button("Cancel"):
-             st.session_state["show_form"] = False
-             st.session_state["view_note"] = None
-             st.session_state["prediction"] = None
-             st.session_state["prediction_message"] = None
-             st.rerun()
-
+        if st.button("Cancel"):
+            st.session_state.show_form = False
+            st.session_state.view_note = None
+            st.session_state.prediction = None
+            st.session_state.prediction_message = None
+            st.session_state.nav_choice = "Saved Notes"
+            st.rerun()
 
     st.stop()
 
