@@ -72,25 +72,51 @@ if "email" not in st.session_state:
 with st.sidebar:
     st.markdown("## Navigation")
 
-    def nav_button(label):
-        is_active = st.session_state.nav_choice == label
-        btn_key = f"nav_{label}"
-        if st.button(label, key=btn_key):
-            st.session_state.nav_choice = label
-        st.markdown(
-            f"<div class='{'nav-button nav-button-active' if is_active else 'nav-button'}'>{label}</div>",
-            unsafe_allow_html=True
-        )
+    nav_options = ["Saved Notes", "New Note", "Statistics"]
+    button_styles = """
+        <style>
+        .custom-nav-button {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .custom-nav-button.active {
+            background-color: #4c83ff !important;
+            color: white !important;
+        }
+        .custom-nav-button.inactive {
+            background-color: #f0f2f6 !important;
+            color: #333 !important;
+        }
+        .custom-nav-button:hover {
+            background-color: #dbe4f0 !important;
+        }
+        </style>
+    """
+    st.markdown(button_styles, unsafe_allow_html=True)
 
-    nav_button("Saved Notes")
-    nav_button("New Note")
-    nav_button("Statistics")
+    for option in nav_options:
+        is_active = st.session_state.nav_choice == option
+        button_key = f"nav_button_{option.replace(' ', '_')}"
+        button_label = f"<button class='custom-nav-button {'active' if is_active else 'inactive'}'>{option}</button>"
+        if st.markdown(button_label, unsafe_allow_html=True):
+            pass  # Dummy label, style only
+        if st.button(" ", key=button_key):
+            st.session_state.nav_choice = option
+            st.rerun()
 
     st.markdown("---")
     if st.button("Logout"):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
         st.rerun()
+
 
 # --- Set View State from nav_choice ---
 if st.session_state.nav_choice == "New Note":
