@@ -96,7 +96,11 @@ if st.session_state.view_note:
     note = df[df["id"] == int(note_id)].iloc[0]
 
     st.subheader(f"Editing: {note['title']}")
-    st.write(note["prediction_message"])
+
+    # ✅ Fix: only show prediction message if it’s a proper string
+    prediction_msg = note.get("prediction_message", "")
+    if isinstance(prediction_msg, str) and prediction_msg.strip():
+        st.info(prediction_msg)
 
     new_title = st.text_input("Title (max 100 characters)", value=note["title"][:100], max_chars=100, key="edit_title")
     new_body = st.text_area("Body", value=note["body"], height=250, key="edit_body")
