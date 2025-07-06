@@ -66,7 +66,7 @@ if st.session_state.view_note:
     st.subheader(f"Editing: {note['title']}")
     st.write(note["prediction_message"])
 
-with st.form("edit_note_form"):
+    with st.form("edit_note_form"):
     new_title = st.text_input("Title", value=note["title"])
     new_body = st.text_area("Body", value=note["body"], height=250)
 
@@ -109,6 +109,7 @@ with st.form("edit_note_form"):
     elif back_btn:
         st.session_state.view_note = None
         st.rerun()
+
 
 
 # --- View Analysis ---
