@@ -169,7 +169,7 @@ elif st.session_state.show_form:
              st.session_state["view_note"] = None
              st.session_state["prediction"] = None
              st.session_state["prediction_message"] = None
-             st.experimental_rerun()
+             st.rerun()
 
 
     st.stop()
