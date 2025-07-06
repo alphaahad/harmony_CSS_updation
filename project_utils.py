@@ -142,10 +142,13 @@ def predict_label_schizo(text):
 
 # --- Predict Both ---
 def predict_both(text):
+    if not text.strip():
+        return 0.0, 0.0, ""  # Return an empty message if input is blank
     schizo, to_be_printed_schizo = predict_label_schizo(text)
     depression, to_be_printed_dep = predict_label_depression(text)
-    msg = to_be_printed_schizo + " and " + to_be_printed_dep
+    msg = f"{to_be_printed_schizo} and {to_be_printed_dep}"
     return schizo, depression, msg
+
 
 # --- Preview Text ---
 def preview(text, lines=2):
@@ -161,7 +164,7 @@ def save_note_to_supabase(title, body, pred_depression, pred_schizophrenia, pred
         "body": body,
         "pred_depression": pred_depression,
         "pred_schizophrenia": pred_schizophrenia,
-        "prediction_message": prediction_message,
+        "prediction_message": str(prediction_message).strip() if prediction_message else "",
         "user_id": st.session_state["user_id"]
     }
     try:
