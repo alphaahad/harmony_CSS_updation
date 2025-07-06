@@ -75,19 +75,32 @@ if st.session_state.view_note:
     """, unsafe_allow_html=True)
 
     with st.form("edit_note_form"):
-        new_title = st.text_input("Title", value=note["title"])
-        new_body = st.text_area("Body", value=note["body"], height=250)
+    new_title = st.text_input("Title", value=note["title"])
+    new_body = st.text_area("Body", value=note["body"], height=250)
 
-        # Arrange buttons in a single row
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
-            save_btn = st.form_submit_button("💾 Save")
-        with col2:
-            update_btn = st.form_submit_button("🔁 Update Prediction")
-        with col3:
-            delete_btn = st.form_submit_button("🗑️ Delete Note")
-        with col4:
-            back_btn = st.form_submit_button("🔙 Back")
+    # Add CSS for button styling
+    st.markdown("""
+        <style>
+        .stButton>button {
+            height: 45px;
+            font-size: 16px;
+            border-radius: 8px;
+            width: 100%;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    # Equal-width columns for buttons
+    col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
+    with col1:
+        save_btn = st.form_submit_button("💾 Save")
+    with col2:
+        update_btn = st.form_submit_button("🔁 Update Prediction")
+    with col3:
+        delete_btn = st.form_submit_button("🗑️ Delete Note")
+    with col4:
+        back_btn = st.form_submit_button("🔙 Back")
+
 
     if save_btn:
         if new_title.strip() and new_body.strip():
