@@ -18,29 +18,6 @@ st.markdown("""
         border-radius: 8px;
         width: 100%;
     }
-    </style>
-""", unsafe_allow_html=True)
-
-import streamlit as st
-from project_utils import *
-
-# --- Page Setup ---
-st.set_page_config(page_title="Harmony", layout="wide")
-
-# --- CSS Styling ---
-st.markdown("""
-    <style>
-    button[kind="secondary"] {
-        font-size: 20px !important;
-        padding: 12px 20px !important;
-        border-radius: 10px !important;
-    }
-    .stButton>button {
-        height: 48px;
-        font-size: 16px;
-        border-radius: 8px;
-        width: 100%;
-    }
     h1 {
         margin-top: 20px;
         margin-bottom: 20px;
@@ -50,9 +27,8 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ✅ Always-visible heading (top of every page, including login)
+# ✅ Always-visible heading
 st.markdown("<h1>PROJECT HARMONY</h1>", unsafe_allow_html=True)
-
 
 # --- Session Init ---
 for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.items():
@@ -63,7 +39,6 @@ for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.
 if "email" not in st.session_state:
     login_screen()
     st.stop()
-
 
 # --- Sidebar Navigation ---
 with st.sidebar:
@@ -97,14 +72,10 @@ if st.session_state.view_note:
 
     st.subheader(f"Editing: {note['title']}")
 
-    # ✅ Fix: only show prediction message if it’s a proper string
+    # ✅ Filter out junk messages like "0.0"
     prediction_msg = note.get("prediction_message", "")
-    if isinstance(prediction_msg, str) and prediction_msg.strip():
+    if isinstance(prediction_msg, str) and prediction_msg.strip() and prediction_msg.strip() != "0.0":
         st.info(prediction_msg)
-    elif isinstance(prediction_msg, (float, int)) and prediction_msg > 1:
-    # Only show if it's a valid-looking score, not junk like 0.0
-        st.info(str(prediction_msg))
-
 
     new_title = st.text_input("Title (max 100 characters)", value=note["title"][:100], max_chars=100, key="edit_title")
     new_body = st.text_area("Body", value=note["body"], height=250, key="edit_body")
@@ -175,11 +146,15 @@ elif st.session_state.show_form:
     with col2:
         if st.button("Save Note"):
             if title.strip() and body.strip():
-                p = predict_both(body) if "prediction" not in st.session_state else (
-                    st.session_state.prediction,
-                    st.session_state.prediction_message,
-                    0.0
-                )
+                if "prediction" in st.session_state and "prediction_message" in st.session_state:
+                    p = (
+                        st.session_state.prediction,
+                        st.session_state.prediction_message,
+                        st.session_state.prediction_message
+                    )
+                else:
+                    p = predict_both(body)
+
                 save_note_to_supabase(title, body, p[0], p[1], p[2])
                 st.session_state.show_form = False
                 st.session_state.prediction = None
@@ -222,4 +197,3 @@ else:
                 if st.button("Open", key=f"open_note_{note['id']}"):
                     st.session_state.view_note = note["id"]
                     st.rerun()
-
