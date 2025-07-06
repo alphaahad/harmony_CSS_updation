@@ -30,14 +30,19 @@ if "email" not in st.session_state:
     login_screen()
     st.stop()
 
-# --- Floating Buttons ---
-# --- Floating Buttons: Bottom Right Vertical Stack ---
-bottom_right_col1, bottom_right_col2, _ = st.columns([0.85, 0.1, 0.05])
-with bottom_right_col2:
+# --- Spacer to Push Buttons Down ---
+st.write("")  # minimal space
+for _ in range(10):  # increase for lower placement
+    st.empty()
+
+# --- Floating Button Stack (Bottom-Right Simulation) ---
+br_space, br_btn_col = st.columns([0.85, 0.15])
+with br_btn_col:
     if st.button("➕", key="float_add", help="Add New Note"):
         st.session_state.show_form = True
         st.session_state.view_note = None
         st.session_state.show_analysis = False
+
     if st.button("📊", key="float_stats", help="View Stats"):
         st.session_state.show_form = False
         st.session_state.view_note = None
