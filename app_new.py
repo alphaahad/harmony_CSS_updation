@@ -69,7 +69,7 @@ if st.session_state.view_note:
     st.subheader(f"Editing: {note['title']}")
     st.write(note["prediction_message"])
 
-    new_title = st.text_input("Title (max 20 characters)", value=note["title"][:20], max_chars=20, key="edit_title")
+    new_title = st.text_input("Title (max50 characters)", value=note["title"][:50], max_chars=50, key="edit_title")
     new_body = st.text_area("Body", value=note["body"], height=250, key="edit_body")
 
     col1, col2, col3, col4 = st.columns(4)
