@@ -89,11 +89,6 @@ else:
         st.session_state.show_form = False
         st.session_state.show_analysis = False
 
-# --- Heading ---
-st.markdown("""
-    <h1 style='text-align: center; font-weight: 600; margin-top: 20px;'>PROJECT HARMONY</h1>
-""", unsafe_allow_html=True)
-
 # --- View Note ---
 if st.session_state.view_note:
     df = get_notes_from_supabase()
