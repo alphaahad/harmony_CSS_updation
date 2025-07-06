@@ -33,7 +33,7 @@ if "email" not in st.session_state:
 
 # --- Sidebar Navigation ---
 with st.sidebar:
-    st.markdown("## 📚 Navigation")
+    st.markdown("## Navigation")
     nav_choice = st.radio("Select an option:", ["Saved Notes", "New Note", "Statistics"])
     st.markdown("---")
     if st.button("🚪 Logout"):
@@ -69,7 +69,7 @@ if st.session_state.view_note:
     st.subheader(f"Editing: {note['title']}")
     st.write(note["prediction_message"])
 
-    new_title = st.text_input("Title (max 50 characters)", value=note["title"][:50], max_chars=50, key="edit_title")
+    new_title = st.text_input("Title (max 100 characters)", value=note["title"][:100], max_chars=100, key="edit_title")
     new_body = st.text_area("Body", value=note["body"], height=250, key="edit_body")
 
     col1, col2, col3, col4 = st.columns(4)
@@ -106,7 +106,7 @@ if st.session_state.view_note:
 
 # --- View Analysis ---
 elif st.session_state.show_analysis:
-    st.subheader("📊 Statistics Dashboard")
+    st.subheader("Statistics Dashboard")
     with st.form("choose_analysis"):
         option = st.selectbox("Which analysis?", ["Depression", "Schizophrenia"])
         submitted = st.form_submit_button("Show")
@@ -123,9 +123,9 @@ elif st.session_state.show_analysis:
 
 # --- Add New Note ---
 elif st.session_state.show_form:
-    st.subheader("📝 New Journal Entry")
+    st.subheader("New Journal Entry")
 
-    title = st.text_input("Title (max 50 characters)", max_chars=50)
+    title = st.text_input("Title (max 100 characters)", max_chars=100)
     body = st.text_area("Write your journal entry here:", height=200)
 
     col1, col2, col3 = st.columns(3)
