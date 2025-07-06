@@ -21,13 +21,38 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- Heading (Always shown) ---
+import streamlit as st
+from project_utils import *
+
+# --- Page Setup ---
+st.set_page_config(page_title="Harmony", layout="wide")
+
+# --- CSS Styling ---
 st.markdown("""
-    <div style='text-align: center; margin-top: 10px;'>
-        <h1 style='font-weight: 600; margin-bottom: 0;'>PROJECT HARMONY</h1>
-        <hr style='width: 60%; margin-top: 5px;'>
-    </div>
+    <style>
+    button[kind="secondary"] {
+        font-size: 20px !important;
+        padding: 12px 20px !important;
+        border-radius: 10px !important;
+    }
+    .stButton>button {
+        height: 48px;
+        font-size: 16px;
+        border-radius: 8px;
+        width: 100%;
+    }
+    h1 {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+        font-weight: 600;
+    }
+    </style>
 """, unsafe_allow_html=True)
+
+# ✅ Always-visible heading (top of every page, including login)
+st.markdown("<h1>PROJECT HARMONY</h1>", unsafe_allow_html=True)
+
 
 # --- Session Init ---
 for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.items():
