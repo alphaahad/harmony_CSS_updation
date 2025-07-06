@@ -36,7 +36,6 @@ def is_valid_email(email: str) -> bool:
 
 # --- Login/Register Screen ---
 def login_screen():
-    st.subheader("🔐 Welcome to HARMONY")
 
     login_tab, register_tab = st.tabs(["Log In", "Register"])
 
