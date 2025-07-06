@@ -4,10 +4,15 @@ from project_utils import *
 # --- Page Setup ---
 st.set_page_config(page_title="Harmony", layout="wide")
 
-# --- Logout Button ---
+# --- Centered Heading for All Pages ---
+header_col1, header_col2, header_col3 = st.columns([1, 3, 1])
+with header_col2:
+    st.markdown("## 🧠 Welcome to Project Harmony")
+
+# --- Logout Button (Top-Right, only after login) ---
 if "email" in st.session_state:
-    col1, col2 = st.columns([10, 1])
-    with col2:
+    top_col1, top_col2 = st.columns([10, 1])
+    with top_col2:
         if st.button("Logout"):
             for key in list(st.session_state.keys()):
                 del st.session_state[key]
