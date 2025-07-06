@@ -184,4 +184,5 @@ else:
                 )
                 if st.button("Open", key=f"open_note_{note['id']}"):
                     st.session_state.view_note = note["id"]
-                    st.experimental_rerun()
+                    st.rerun()
+
