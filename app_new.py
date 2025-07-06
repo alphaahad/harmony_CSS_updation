@@ -36,7 +36,7 @@ with st.sidebar:
     st.markdown("## Navigation")
     nav_choice = st.radio("Select an option:", ["Saved Notes", "New Note", "Statistics"])
     st.markdown("---")
-    if st.button("🚪 Logout"):
+    if st.button("Logout"):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
         st.rerun()
@@ -162,7 +162,7 @@ elif st.session_state.show_form:
     st.stop()
 
 # --- Notes Grid ---
-st.subheader("📓 Saved Notes")
+st.subheader("Saved Notes")
 df = get_notes_from_supabase()
 
 if df.empty:
