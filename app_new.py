@@ -134,7 +134,7 @@ elif st.session_state.show_form:
             p = predict_both(body)
             st.session_state.prediction = p[0]
             st.session_state.prediction_message = p[1]
-            st.success(f"{p[1]} (Confidence: {round(p[2]*100, 2)}%)")
+            st.success(f"Schizophrenia: {p[0]}%, Depression: {p[1]}%\n{p[2]}")
     with col2:
         if st.button("Save Note"):
             if title.strip() and body.strip():
