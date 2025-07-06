@@ -132,18 +132,18 @@ with st.form("edit_note_form"):
         st.rerun()
 
 # --- View Analysis ---
-elif st.session_state.show_analysis:
-    with st.form("choose_analysis"):
-        option = st.selectbox("Which analysis?", ["Depression", "Schizophrenia"])
-        submitted = st.form_submit_button("Show")
-    if submitted:
-        if option == "Depression":
-            show_analysis_depression()
-        else:
-            show_analysis_schizo()
-    if st.button("Back to Notes"):
-        st.session_state.show_analysis = False
-        st.rerun()
+    elif st.session_state.show_analysis:
+        with st.form("choose_analysis"):
+            option = st.selectbox("Which analysis?", ["Depression", "Schizophrenia"])
+            submitted = st.form_submit_button("Show")
+        if submitted:
+            if option == "Depression":
+                show_analysis_depression()
+            else:
+                show_analysis_schizo()
+        if st.button("Back to Notes"):
+            st.session_state.show_analysis = False
+            st.rerun()
 
 # --- Add New Note ---
 elif st.session_state.show_form:
