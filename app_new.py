@@ -4,11 +4,12 @@ from project_utils import *
 # --- Page Setup ---
 st.set_page_config(page_title="Harmony", layout="wide")
 
+# --- Enlarge Buttons ---
 st.markdown("""
     <style>
     button[kind="secondary"] {
         font-size: 20px !important;
-        padding: 12px 18px !important;
+        padding: 12px 20px !important;
         border-radius: 10px !important;
     }
     </style>
@@ -17,18 +18,9 @@ st.markdown("""
 # --- Centered Heading Using HTML ---
 st.markdown("""
     <h1 style='text-align: center; font-weight: 600; margin-top: 20px;'>
-                     PROJECT HARMONY
+        PROJECT HARMONY
     </h1>
 """, unsafe_allow_html=True)
-
-# --- Logout Button (Top-Right, only after login) ---
-if "email" in st.session_state:
-    top_col1, top_col2 = st.columns([10, 1])
-    with top_col2:
-        if st.button("Logout"):
-            for key in list(st.session_state.keys()):
-                del st.session_state[key]
-            st.rerun()
 
 # --- Session Init ---
 for key, val in {"view_note": None, "show_form": False, "show_analysis": False}.items():
@@ -40,8 +32,8 @@ if "email" not in st.session_state:
     login_screen()
     st.stop()
 
-# --- Top-Left Action Buttons (side by side, enlarged) ---
-button_col1, button_col2, _ = st.columns([0.06, 0.06, 0.88])
+# --- Top Row: Buttons Left, Logout Right ---
+button_col1, button_col2, spacer, logout_col = st.columns([0.06, 0.06, 0.76, 0.12])
 
 with button_col1:
     if st.button("➕", key="add_note", help="Add New Note"):
@@ -54,6 +46,12 @@ with button_col2:
         st.session_state.show_form = False
         st.session_state.view_note = None
         st.session_state.show_analysis = True
+
+with logout_col:
+    if st.button("Logout"):
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+        st.rerun()
 
 # --- View Specific Note ---
 if st.session_state.view_note:
