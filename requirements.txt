@@ -8,3 +8,4 @@ matplotlib
 joblib
 scikit-learn
 sentence-transformers
+tensorflow
