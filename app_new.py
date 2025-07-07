@@ -219,7 +219,6 @@ elif st.session_state.show_form:
             st.session_state.prediction = None
             st.session_state.prediction_message = None
             st.session_state.view_note = None
-            st.session_state.nav_choice = "Saved Notes"
             st.rerun()
         else:
             st.warning("Title and body cannot be empty.")
