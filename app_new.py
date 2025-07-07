@@ -147,7 +147,7 @@ if st.session_state.view_note:
 
     st.subheader(f"Editing: {note['title']}")
 
-    # ✅ Filter out junk messages like "0.0"
+    # Filter out junk messages like "0.0"
     prediction_msg = note.get("prediction_message", "")
     if isinstance(prediction_msg, str) and prediction_msg.strip() and prediction_msg.strip() != "0.0":
         st.info(prediction_msg)
