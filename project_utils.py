@@ -63,7 +63,7 @@ def login_screen():
                 st.warning("Please fill out all fields to register.")
                 return
             if password != confirm_password:
-                st.warning("Passwords do not match. Try again, diva 💅")
+                st.warning("Passwords do not match. Try again.")
                 return
             user = get_user_by_email(email)
             handle_register(user, email, name, password)
