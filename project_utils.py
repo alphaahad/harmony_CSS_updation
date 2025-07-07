@@ -30,7 +30,7 @@ vectorizer_depression = joblib.load("models/depression_vectorizer.pkl")
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 model_schizo = load_model("models/lstm_emb128_lstm64_len250.h5", compile=False)
-tokenizer_schizo = joblib.load("models/lstm_tokenizer_shared.pkl")
+tokenizer_schizo = pickle.load("models/lstm_tokenizer_shared.pkl")
 
 # --- Email Validation ---
 def is_valid_email(email: str) -> bool:
