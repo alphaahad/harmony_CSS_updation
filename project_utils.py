@@ -129,13 +129,13 @@ def predict_label_depression(text):
     return prob_depressed, to_be_printed_dep
 
 # --- Predict Schizophrenia (TF-IDF + SVM) ---
-def predict_label_schizo(text):
+def predict_label_schizo(text, maxlen=250):
     if text.strip() == "":
         return 0.0, "Unknown"
-    vec = vectorizer_schizo.transform([text])
-    score = model_schizo.decision_function(vec)[0]
-    prob = expit(score)  # sigmoid
-    pred = 1 if prob >= 0.65 else 0  # <- Custom threshold (adjustable)
+    seq = tokenizer_schizo.texts_to_sequences([text])
+    padded = pad_sequences(seq, maxlen=maxlen)
+    prob = float(model_schizo.predict(padded, verbose=0)[0][0])
+    pred = 1 if prob >= 0.5 else 0  # You can increase threshold if needed
 
     confidence_score = round(prob * 100, 2) if pred == 1 else round((1 - prob) * 100, 2)
     prob_schizo = round(prob * 100, 2)
