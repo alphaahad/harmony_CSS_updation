@@ -174,9 +174,15 @@ if st.session_state.view_note:
     with col1:
          if st.button("Update and Save Note"):
              if new_title.strip() and new_body.strip():
-                 p = predict_both(new_body)
+                 prediction = predict_both(new_body)
                  delete_note_from_supabase(int(note_id))
-                 save_note_to_supabase(new_title, new_body, p[0], p[1], p[2])
+                 save_note_to_supabase(
+                     title=title,
+                     body=body,
+                     pred_depression=prediction[0],
+                     pred_schizophrenia=prediction[1],
+                     prediction_message=prediction[2]
+                 )
                  st.success("Note updated successfully.")
                  time.sleep(4)
                  st.session_state.view_note = None
@@ -224,10 +230,16 @@ elif st.session_state.show_form:
 
     if st.button("Predict and Save Note"):
         if title.strip() and body.strip():
-            p = predict_both(body)  # (prediction, prediction_message, display_message)
+            prediction = predict_both(body)  # (prediction, prediction_message, display_message)
 
-            save_note_to_supabase(title, body, p[0], p[1], p[2])
-            st.success(f"{p[2]}")
+            save_note_to_supabase(
+                title=title,
+                body=body,
+                pred_depression=prediction[0],
+                pred_schizophrenia=prediction[1],
+                prediction_message=prediction[2]
+            )
+            st.success(f"{prediction[2]}")
 
             # Show result for 5 seconds before redirecting
             time.sleep(4)
