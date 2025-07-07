@@ -56,14 +56,17 @@ def login_screen():
         name = st.text_input("Full Name", key="register_name")
         email = st.text_input("Email", key="register_email")
         password = st.text_input("Password", type="password", key="register_password")
+        confirm_password = st.text_input("Confirm Password", type="password", key="register_confirm")
 
         if st.button("Register"):
-            if not name or not email or not password:
+            if not name or not email or not password or not confirm_password:
                 st.warning("Please fill out all fields to register.")
+                return
+            if password != confirm_password:
+                st.warning("Passwords do not match. Try again, diva 💅")
                 return
             user = get_user_by_email(email)
             handle_register(user, email, name, password)
-
 # --- Auth Helpers ---
 def get_user_by_email(email):
     try:
