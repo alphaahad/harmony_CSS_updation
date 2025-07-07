@@ -150,7 +150,7 @@ def predict_both(text):
     schizo, to_be_printed_schizo = predict_label_schizo(text)
     depression, to_be_printed_dep = predict_label_depression(text)
     msg = f"{to_be_printed_schizo} and {to_be_printed_dep}"
-    return schizo, depression, msg
+    return depression, schizo, msg
 
 
 # --- Preview Text ---
