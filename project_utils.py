@@ -11,7 +11,6 @@ from dotenv import load_dotenv
 import re
 from datetime import datetime
 from scipy.special import expit  # sigmoid
-from tensorflow.keras.models import load_model
 import pickle
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
