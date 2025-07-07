@@ -208,7 +208,7 @@ elif st.session_state.show_form:
     title = st.text_input("Title (max 100 characters)", max_chars=100)
     body = st.text_area("Write your journal entry here:", height=200)
 
-    if st.button("🧠 Predict and Save Note"):
+    if st.button("Predict and Save Note"):
         if title.strip() and body.strip():
             p = predict_both(body)  # returns (prediction, prediction_message, display_message)
             save_note_to_supabase(title, body, p[0], p[1], p[2])
