@@ -217,7 +217,7 @@ elif st.session_state.show_form:
             st.success(f"{p[2]}")
 
             # Show result for 5 seconds before redirecting
-            time.sleep(5)
+            time.sleep(4)
 
             # Reset states and reroute
             st.session_state.show_form = False
