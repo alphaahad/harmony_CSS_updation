@@ -11,6 +11,8 @@ from dotenv import load_dotenv
 import re
 from datetime import datetime
 from scipy.special import expit  # sigmoid
+from tensorflow.keras.models import load_model
+import pickle
 
 # --- Load environment variables ---
 load_dotenv()
@@ -26,8 +28,9 @@ HEADERS = {
 # --- Load ML Models ---
 model_depression = joblib.load("models/depression_model.pkl")
 vectorizer_depression = joblib.load("models/depression_vectorizer.pkl")
-model_schizo = joblib.load("models/schizophrenia_model.pkl")
-vectorizer_schizo = joblib.load("models/schizophrenia_vectorizer.pkl")
+model_schizo = load_model("models/lstm_schizo_model.h5")
+with open("models/tokenizer_schizo.pkl", "rb") as f:
+    tokenizer_schizo = pickle.load(f)
 
 # --- Email Validation ---
 def is_valid_email(email: str) -> bool:
