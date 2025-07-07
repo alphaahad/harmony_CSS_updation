@@ -210,7 +210,7 @@ elif st.session_state.show_form:
 
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("Update Prediction"):
+        if st.button("Predict"):
             p = predict_both(body)
             st.session_state.prediction = p[0]
             st.session_state.prediction_message = p[1]
