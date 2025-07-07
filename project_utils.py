@@ -27,9 +27,11 @@ HEADERS = {
 # --- Load ML Models ---
 model_depression = joblib.load("models/depression_model.pkl")
 vectorizer_depression = joblib.load("models/depression_vectorizer.pkl")
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
 model_schizo = load_model("models/lstm_schizo_model.h5")
-with open("models/tokenizer_schizo.pkl", "rb") as f:
-    tokenizer_schizo = pickle.load(f)
+tokenizer_schizo = joblib.load("models/tokenizer_schizo.pkl")
 
 # --- Email Validation ---
 def is_valid_email(email: str) -> bool:
