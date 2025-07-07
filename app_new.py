@@ -50,7 +50,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ✅ Always-visible heading
+# Always-visible heading
 st.markdown("<h1>PROJECT HARMONY</h1>", unsafe_allow_html=True)
 
 # --- Session Init ---
@@ -172,17 +172,18 @@ if st.session_state.view_note:
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        if st.button("Update and Save Note"):
-            if new_title.strip() and new_body.strip():
-                p = predict_both(new_body)
-                delete_note_from_supabase(int(note_id))
-                save_note_to_supabase(new_title, new_body, p[0], p[1], p[2])
-                st.success(f"{p[2]}")
-                time.sleep(4)
-                st.session_state.view_note = None
-                st.rerun()
-            else:
-                st.warning("Title and body cannot be empty.")
+         if st.button("Update and Save Note"):
+             if new_title.strip() and new_body.strip():
+                 p = predict_both(new_body)
+                 delete_note_from_supabase(int(note_id))
+                 save_note_to_supabase(new_title, new_body, p[0], p[1], p[2])
+                 st.success("Note updated successfully.")
+                 time.sleep(4)
+                 st.session_state.view_note = None
+                 st.rerun()
+             else:
+                 st.warning("Title and body cannot be empty.")
+
 
     with col2:
         if st.button("Delete Note"):
