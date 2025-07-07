@@ -29,7 +29,7 @@ model_depression = joblib.load("models/depression_model.pkl")
 vectorizer_depression = joblib.load("models/depression_vectorizer.pkl")
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-model_schizo = load_model("models/lstm_emb128_lstm64_len250.h5", compile=False)
+model_schizo = load_model("models/lstm_emb128_lstm64_len250.keras", compile=False)
 tokenizer_schizo = pickle.load("models/lstm_tokenizer_shared.pkl")
 
 # --- Email Validation ---
