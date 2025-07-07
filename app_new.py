@@ -208,36 +208,24 @@ elif st.session_state.show_form:
     title = st.text_input("Title (max 100 characters)", max_chars=100)
     body = st.text_area("Write your journal entry here:", height=200)
 
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("Predict"):
-            p = predict_both(body)
-            st.session_state.prediction = p[0]
-            st.session_state.prediction_message = p[1]
+    if st.button("🧠 Predict and Save Note"):
+        if title.strip() and body.strip():
+            p = predict_both(body)  # returns (prediction, prediction_message, display_message)
+            save_note_to_supabase(title, body, p[0], p[1], p[2])
             st.success(f"{p[2]}")
-    with col2:
-        if st.button("Save Note"):
-            if title.strip() and body.strip():
-                if "prediction" in st.session_state and "prediction_message" in st.session_state:
-                    p = (
-                        st.session_state.prediction,
-                        st.session_state.prediction_message,
-                        st.session_state.prediction_message
-                    )
-                else:
-                    p = predict_both(body)
 
-                save_note_to_supabase(title, body, p[0], p[1], p[2])
-                st.session_state.show_form = False
-                st.session_state.prediction = None
-                st.session_state.prediction_message = None
-                st.session_state.view_note = None
-                st.session_state.nav_choice = "Saved Notes"
-                st.rerun()
-            else:
-                st.warning("Title and body cannot be empty.")
+            # reset states
+            st.session_state.show_form = False
+            st.session_state.prediction = None
+            st.session_state.prediction_message = None
+            st.session_state.view_note = None
+            st.session_state.nav_choice = "Saved Notes"
+            st.rerun()
+        else:
+            st.warning("Title and body cannot be empty.")
 
     st.stop()
+
 
 # --- Notes Grid ---
 st.subheader("Saved Notes")
