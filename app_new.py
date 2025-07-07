@@ -177,8 +177,8 @@ if st.session_state.view_note:
                  prediction = predict_both(new_body)
                  delete_note_from_supabase(int(note_id))
                  save_note_to_supabase(
-                     title=title,
-                     body=body,
+                     title=new_title,
+                     body=new_body,
                      pred_depression=prediction[0],
                      pred_schizophrenia=prediction[1],
                      prediction_message=prediction[2]
