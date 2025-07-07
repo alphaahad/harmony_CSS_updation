@@ -1,5 +1,6 @@
 import streamlit as st
 from project_utils import *
+import time
 
 # --- Page Setup ---
 st.set_page_config(page_title="Harmony", layout="wide")
@@ -210,15 +211,20 @@ elif st.session_state.show_form:
 
     if st.button("Predict and Save Note"):
         if title.strip() and body.strip():
-            p = predict_both(body)  # returns (prediction, prediction_message, display_message)
+            p = predict_both(body)  # (prediction, prediction_message, display_message)
+
             save_note_to_supabase(title, body, p[0], p[1], p[2])
             st.success(f"{p[2]}")
 
-            # reset states
+            # Show result for 5 seconds before redirecting
+            time.sleep(5)
+
+            # Reset states and reroute
             st.session_state.show_form = False
             st.session_state.prediction = None
             st.session_state.prediction_message = None
             st.session_state.view_note = None
+            st.session_state.nav_choice = "Saved Notes"
             st.rerun()
         else:
             st.warning("Title and body cannot be empty.")
