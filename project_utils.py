@@ -1,3 +1,4 @@
+
 import os
 import pandas as pd
 import bcrypt
@@ -11,7 +12,6 @@ from dotenv import load_dotenv
 import re
 from datetime import datetime
 from scipy.special import expit  # sigmoid
-import pickle
 
 # --- Load environment variables ---
 load_dotenv()
@@ -27,10 +27,8 @@ HEADERS = {
 # --- Load ML Models ---
 model_depression = joblib.load("models/depression_model.pkl")
 vectorizer_depression = joblib.load("models/depression_vectorizer.pkl")
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-model_schizo = load_model("models/lstm_emb128_lstm64_len250.keras", compile=False)
-tokenizer_schizo = pickle.load("models/lstm_tokenizer_shared.pkl")
+model_schizo = joblib.load("models/schizophrenia_model.pkl")
+vectorizer_schizo = joblib.load("models/schizophrenia_vectorizer.pkl")
 
 # --- Email Validation ---
 def is_valid_email(email: str) -> bool:
@@ -128,13 +126,13 @@ def predict_label_depression(text):
     return prob_depressed, to_be_printed_dep
 
 # --- Predict Schizophrenia (TF-IDF + SVM) ---
-def predict_label_schizo(text, maxlen=250):
+def predict_label_schizo(text):
     if text.strip() == "":
         return 0.0, "Unknown"
-    seq = tokenizer_schizo.texts_to_sequences([text])
-    padded = pad_sequences(seq, maxlen=maxlen)
-    prob = float(model_schizo.predict(padded, verbose=0)[0][0])
-    pred = 1 if prob >= 0.5 else 0  # You can increase threshold if needed
+    vec = vectorizer_schizo.transform([text])
+    score = model_schizo.decision_function(vec)[0]
+    prob = expit(score)  # sigmoid
+    pred = 1 if prob >= 0.65 else 0  # <- Custom threshold (adjustable)
 
     confidence_score = round(prob * 100, 2) if pred == 1 else round((1 - prob) * 100, 2)
     prob_schizo = round(prob * 100, 2)
