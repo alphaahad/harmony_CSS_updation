@@ -178,7 +178,7 @@ if st.session_state.view_note:
                 delete_note_from_supabase(int(note_id))
                 save_note_to_supabase(new_title, new_body, p[0], p[1], p[2])
                 st.success(f"{p[2]}")
-                time.sleep(5)
+                time.sleep(4)
                 st.session_state.view_note = None
                 st.rerun()
             else:
