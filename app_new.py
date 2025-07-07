@@ -157,30 +157,24 @@ if st.session_state.view_note:
 
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        if st.button("Save"):
+        if st.button("🧠 Update and Save Note"):
             if new_title.strip() and new_body.strip():
                 p = predict_both(new_body)
                 delete_note_from_supabase(int(note_id))
                 save_note_to_supabase(new_title, new_body, p[0], p[1], p[2])
-                st.success("Note updated successfully.")
+                st.success(f"{p[2]}")
+                time.sleep(5)
                 st.session_state.view_note = None
                 st.rerun()
             else:
                 st.warning("Title and body cannot be empty.")
     with col2:
-        if st.button("Update Prediction"):
-            if new_body.strip():
-                _, _, new_msg = predict_both(new_body)
-                st.info(f"Updated Prediction: {new_msg}")
-            else:
-                st.warning("Cannot update prediction on empty note.")
-    with col3:
         if st.button("Delete Note"):
             delete_note_from_supabase(int(note_id))
             st.success("Note deleted.")
             st.session_state.view_note = None
             st.rerun()
-    with col4:
+    with col3:
         if st.button("Back"):
             st.session_state.view_note = None
             st.rerun()
