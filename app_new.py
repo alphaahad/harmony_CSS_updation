@@ -155,61 +155,46 @@ if st.session_state.view_note:
     new_title = st.text_input("Title (max 100 characters)", value=note["title"][:100], max_chars=100, key="edit_title")
     new_body = st.text_area("Body", value=note["body"], height=250, key="edit_body")
 
-    # === Button Styling ===
+    # === Equal-width button styling ===
     st.markdown("""
     <style>
-        .full-width-button > div {
+        div.stButton > button {
             width: 100% !important;
-        }
-        .note-button {
-            background-color: #5CDB95;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: 600;
+            height: 3rem;
             font-size: 16px;
-            margin-top: 12px;
-        }
-        .note-button:hover {
-            background-color: #379683;
+            font-weight: 600;
+            border-radius: 10px;
         }
     </style>
     """, unsafe_allow_html=True)
 
-    # === Update & Save Button ===
-    with st.container():
-        if st.markdown('<div class="full-width-button">', unsafe_allow_html=True) or True:
-            if st.button("Update and Save Note", key="update_save_btn"):
-                if new_title.strip() and new_body.strip():
-                    p = predict_both(new_body)
-                    delete_note_from_supabase(int(note_id))
-                    save_note_to_supabase(new_title, new_body, p[0], p[1], p[2])
-                    st.success(f"{p[2]}")
-                    time.sleep(5)
-                    st.session_state.view_note = None
-                    st.rerun()
-                else:
-                    st.warning("Title and body cannot be empty.")
-            st.markdown('</div>', unsafe_allow_html=True)
+    # === 3 equal buttons aligned in a row ===
+    col1, col2, col3 = st.columns(3)
 
-    # === Delete Button ===
-    with st.container():
-        if st.markdown('<div class="full-width-button">', unsafe_allow_html=True) or True:
-            if st.button("Delete Note", key="delete_btn"):
+    with col1:
+        if st.button("Update and Save Note"):
+            if new_title.strip() and new_body.strip():
+                p = predict_both(new_body)
                 delete_note_from_supabase(int(note_id))
-                st.success("Note deleted.")
+                save_note_to_supabase(new_title, new_body, p[0], p[1], p[2])
+                st.success(f"{p[2]}")
+                time.sleep(5)
                 st.session_state.view_note = None
                 st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
+            else:
+                st.warning("Title and body cannot be empty.")
 
-    # === Back Button ===
-    with st.container():
-        if st.markdown('<div class="full-width-button">', unsafe_allow_html=True) or True:
-            if st.button("Back", key="back_btn"):
-                st.session_state.view_note = None
-                st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
+    with col2:
+        if st.button("Delete Note"):
+            delete_note_from_supabase(int(note_id))
+            st.success("Note deleted.")
+            st.session_state.view_note = None
+            st.rerun()
+
+    with col3:
+        if st.button("Back"):
+            st.session_state.view_note = None
+            st.rerun()
 
     st.stop()
 
