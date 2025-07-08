@@ -24,9 +24,8 @@ HEADERS = {
 }
 
 # --- Load ML Models ---
-import joblib
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing.sequence import pad_sequences
+from keras.models import load_model
+from keras.preprocessing.sequence import pad_sequences
 
 # Depression (TF-IDF + Logistic Regression)
 model_depression = joblib.load("models/depression_model.pkl")
@@ -34,11 +33,10 @@ vectorizer_depression = joblib.load("models/depression_vectorizer.pkl")
 
 # Schizophrenia (LSTM Model + Tokenizer)
 model_schizo = load_model("models/lstm_schizo_model.keras", compile=False)
-tokenizer_schizo = joblib.load("models/tokenizer_schizo.pkl")
+tokenizer_schizo = joblib.load("models/lstm_tokenizer_shared.pkl")
 
 # Schizophrenia Padding Settings
-MAXLEN_SCHIZO = 250  
-
+MAXLEN_SCHIZO = 250
 
 # --- Email Validation ---
 def is_valid_email(email: str) -> bool:
