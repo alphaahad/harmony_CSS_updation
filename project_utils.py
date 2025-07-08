@@ -35,7 +35,7 @@ vectorizer_depression = joblib.load("models/depression_vectorizer.pkl")
 
 # Schizophrenia (LSTM + Tokenizer)
 MODEL_PATH = "models/lstm_schizo_model.keras"
-TOKENIZER_PATH = "models/lstm_tokenizer_shared.pkl"
+TOKENIZER_PATH = "models/tokenizer_schizo.pkl"
 
 if not os.path.exists(MODEL_PATH):
     raise FileNotFoundError(f"❌ LSTM model not found at: {MODEL_PATH}")
