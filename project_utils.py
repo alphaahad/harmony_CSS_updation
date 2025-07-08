@@ -23,6 +23,13 @@ HEADERS = {
     "Content-Type": "application/json"
 }
 
+model_path = "models/lstm_schizo_model.keras"
+if not os.path.exists(model_path):
+    raise FileNotFoundError(f"❌ Model file not found at: {model_path}")
+else:
+    print("✅ Found model file:", model_path)
+model_schizo = load_model(model_path, compile=False)
+
 # --- Load ML Models ---
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
