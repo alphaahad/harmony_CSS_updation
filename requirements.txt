@@ -9,4 +9,4 @@ joblib
 scikit-learn
 sentence-transformers
 keras==2.11.0
-tensorflow==2.11.1
+tensorflow==2.13.1
