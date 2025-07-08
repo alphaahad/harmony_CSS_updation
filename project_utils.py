@@ -33,7 +33,7 @@ vectorizer_depression = joblib.load("models/depression_vectorizer.pkl")
 
 # Schizophrenia (LSTM + Tokenizer)
 MODEL_PATH = "models/lstm_schizo_model.h5"  # ✅ final path after conversion
-TOKENIZER_PATH = "models/lstm_tokenizer_shared.pkl"
+TOKENIZER_PATH = "models/tokenizer_schizo.pkl"
 MAXLEN_SCHIZO = 250  # padding length used during training
 
 # --- File checks ---
