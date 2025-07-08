@@ -24,8 +24,6 @@ HEADERS = {
 }
 
 # --- Load ML Models ---
-import os
-import joblib
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
@@ -34,20 +32,19 @@ model_depression = joblib.load("models/depression_model.pkl")
 vectorizer_depression = joblib.load("models/depression_vectorizer.pkl")
 
 # Schizophrenia (LSTM + Tokenizer)
-MODEL_PATH = "models/lstm_schizo_model.keras"
-TOKENIZER_PATH = "models/tokenizer_schizo.pkl"
+MODEL_PATH = "models/lstm_schizo_model.h5"  # ✅ final path after conversion
+TOKENIZER_PATH = "models/lstm_tokenizer_shared.pkl"
+MAXLEN_SCHIZO = 250  # padding length used during training
 
+# --- File checks ---
 if not os.path.exists(MODEL_PATH):
     raise FileNotFoundError(f"❌ LSTM model not found at: {MODEL_PATH}")
 if not os.path.exists(TOKENIZER_PATH):
     raise FileNotFoundError(f"❌ Tokenizer not found at: {TOKENIZER_PATH}")
 
+# --- Load model and tokenizer ---
 model_schizo = load_model(MODEL_PATH, compile=False)
 tokenizer_schizo = joblib.load(TOKENIZER_PATH)
-
-# Padding
-MAXLEN_SCHIZO = 250
-
 
 # --- Email Validation ---
 def is_valid_email(email: str) -> bool:
