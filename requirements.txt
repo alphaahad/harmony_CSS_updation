@@ -3,10 +3,10 @@ requests
 python-dotenv
 bcrypt
 pandas
-numpy
+numpy<2.0.0
 matplotlib
 joblib
 scikit-learn
 sentence-transformers
+tensorflow==2.11.1
 keras==2.11.0
-tensorflow-cpu==2.13.1
