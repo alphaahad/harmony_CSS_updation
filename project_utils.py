@@ -53,7 +53,6 @@ def is_valid_email(email: str) -> bool:
 
 # --- Login/Register Screen ---
 def login_screen():
-
     login_tab, register_tab = st.tabs(["Log In", "Register"])
 
     with login_tab:
@@ -66,7 +65,20 @@ def login_screen():
                 st.warning("Please enter both email and password.")
                 return
             user = get_user_by_email(email)
-            handle_login(user, email, password)
+            if not user:
+                st.error("No account found with this email.")
+            elif bcrypt.checkpw(password.encode(), user["password"].encode()):
+                st.session_state["email"] = user["email"]
+                st.session_state["name"] = user["name"]
+                st.session_state["user_id"] = user["id"]
+
+                # Safe rerun
+                try:
+                    st.rerun()
+                except AttributeError:
+                    st.experimental_rerun()
+            else:
+                st.error("Incorrect password. Please try again.")
 
     with register_tab:
         st.write("Create a new account.")
@@ -83,7 +95,20 @@ def login_screen():
                 st.warning("Passwords do not match. Try again.")
                 return
             user = get_user_by_email(email)
-            handle_register(user, email, name, password)
+            if user:
+                st.warning("An account with this email already exists. Please log in instead.")
+                return
+
+            hashed_pw = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+            new_user = {"email": email, "name": name, "password": hashed_pw}
+            try:
+                res = requests.post(f"{SUPABASE_URL}/rest/v1/Users", json=new_user, headers=HEADERS)
+                if res.status_code == 201:
+                    st.success("Account created successfully! You can now log in.")
+                else:
+                    st.error(f"Registration failed: {res.text}")
+            except Exception as e:
+                st.error(f"Failed to register: {str(e)}")
 # --- Auth Helpers ---
 def get_user_by_email(email):
     try:
